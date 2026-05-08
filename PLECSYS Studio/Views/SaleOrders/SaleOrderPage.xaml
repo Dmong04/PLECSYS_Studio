@@ -1,0 +1,114 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PLECSYS_Studio.Views.SaleOrders.SaleOrderPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Cliente -->
+            <VerticalStackLayout x:Name="ClientSection" Spacing="10">
+                <Label Text="Cliente" FontAttributes="Bold" />
+                <Entry x:Name="ClientSearchEntry"
+           Placeholder="Buscar cliente..."
+           Text="{Binding SearchText}" />
+
+                <Button Text="Buscar cliente"
+                        Command="{Binding SearchClientsCommand}"
+                        CommandParameter="{Binding Text, Source={x:Reference ClientSearchEntry}}" />
+
+                <CollectionView ItemsSource="{Binding Clients}" HeightRequest="120">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="6" ColumnDefinitions="2*,*">
+                                <Label Text="{Binding Full_name}" />
+                                <Button Text="Seleccionar"
+                                        Grid.Column="1"
+                                        Command="{Binding Source={x:Reference ClientSection}, Path=BindingContext.SelectClientCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+
+            <Button Text="Crear Orden"
+                    Command="{Binding CreateOrderCommand}" />
+
+            <!-- Producto -->
+            <VerticalStackLayout x:Name="ProductSection" Spacing="10">
+                <Label Text="Producto" FontAttributes="Bold" />
+                <Entry x:Name="ProductSearchEntry"
+           Placeholder="Buscar producto..."
+           Text="{Binding SearchText}" />
+
+                <Button Text="Buscar producto"
+            Command="{Binding SearchProductsCommand}"
+            CommandParameter="{Binding Text, Source={x:Reference ProductSearchEntry}}" />
+
+                <CollectionView ItemsSource="{Binding Products}" HeightRequest="120">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="6" ColumnDefinitions="2*,*">
+                                <Label Text="{Binding Display_name}" />
+                                <Button Text="Elegir"
+                                        Grid.Column="1"
+                                        Command="{Binding Source={x:Reference ProductSection}, Path=BindingContext.SelectProductCommand}"
+                                        CommandParameter="{Binding .}" />
+
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Detalles -->
+            <VerticalStackLayout x:Name="DetailSection" Spacing="10">
+                <Entry Placeholder="Cantidad"
+           Keyboard="Numeric"
+           Text="{Binding Quantity}" />
+
+                <Button Text="Agregar detalle"
+            Command="{Binding AddDetailCommand}" />
+
+                <Label Text="Detalles pendientes" FontAttributes="Bold" />
+
+                <!-- Encabezado de columnas -->
+                <Grid ColumnDefinitions="2*,1.2*,1*,1.5*" Padding="0,5">
+                    <Label Text="Artículo" FontAttributes="Bold" Grid.Column="0" />
+                    <Label Text="Precio" FontAttributes="Bold" Grid.Column="1" />
+                    <Label Text="Cantidad" FontAttributes="Bold" Grid.Column="2" />
+                    <Label Text="Subtotal" FontAttributes="Bold" Grid.Column="3" />
+                </Grid>
+
+                <!-- Lista de detalles -->
+                <CollectionView ItemsSource="{Binding Pending_details}" HeightRequest="200">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="2*,1.2*,1*,1.5*" Padding="0,5">
+                                <Label Text="{Binding Product.Product_name}" Grid.Column="0" />
+                                <Label Text="{Binding Product.Unit_price, StringFormat='₡{0:N2}'}"
+                                       Grid.Column="1" HorizontalTextAlignment="End" />
+                                <Label Text="{Binding Quantity}"
+                                       Grid.Column="2" HorizontalTextAlignment="End" />
+                                <Label Text="{Binding Subtotal, StringFormat='₡{0:N2}'}"
+                                       Grid.Column="3" HorizontalTextAlignment="End" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Total calculado -->
+                <Label Text="{Binding Total, StringFormat='Total: ₡{0:N2}'}"
+           FontAttributes="Bold"
+           HorizontalOptions="End"
+           Margin="0,10,0,0" />
+
+                <!-- Confirmar orden -->
+                <Button Text="Confirmar orden"
+            Command="{Binding ConfirmOrderCommand}" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

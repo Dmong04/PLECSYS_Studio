@@ -1,0 +1,52 @@
+# Archivos de Visual Studio
+PLECSYS Studio/.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Carpetas de compilación
+bin/
+obj/
+out/
+
+# Archivos de paquetes NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+*.psmdcp
+*.dll
+*.exe
+
+# Archivos de configuración local
+*.log
+*.cache
+*.db
+*.pid
+*.pdb
+
+# Archivos de sistema
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Archivos de Android/iOS generados
+*.apk
+*.aab
+*.ipa
+
+# Archivos de diseño y depuración
+*.designer.cs
+*.launch.json
+
+# Configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos de simulador/emulador
+*.simstate
+*.simsettings
+
+# Archivos de configuración de usuario extendidos
+*.csproj.user
+*.vcxproj.user
+*.dbmdl

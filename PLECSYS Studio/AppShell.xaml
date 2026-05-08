@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PLECSYS_Studio.AppShell"
+    xmlns:gps="clr-namespace:PLECSYS_Studio.Views.GPS"
+    xmlns:main="clr-namespace:PLECSYS_Studio"
+    xmlns:views="clr-namespace:PLECSYS_Studio.Views"
+    xmlns:invoices="clr-namespace:PLECSYS_Studio.Views.Invoices"
+    xmlns:orders="clr-namespace:PLECSYS_Studio.Views.SaleOrders">
+
+    <ShellContent Title="Principal" ContentTemplate="{DataTemplate views:HomePage}" Route="HomePage" />
+    <ShellContent Title="Registrar ruta de vendedor" ContentTemplate="{DataTemplate gps:GPSPage}" Route="GPSPage"/>
+    <ShellContent Title="Registrar ubicación" ContentTemplate="{DataTemplate gps:MapPage}" Route="MapPage"/>
+    <ShellContent Title="Ver facturas" ContentTemplate="{DataTemplate invoices:InvoicesPage}" Route="InvoicesPage" />
+    <ShellContent Title="Crear orden de compra" ContentTemplate="{DataTemplate orders:SaleOrderPage}" Route="SaleOrderPage" />
+    <ShellContent Title="Configurar Intervalo de Rastreo" ContentTemplate="{DataTemplate gps:TrackingConfigPage}" Route="TrackingConfigPage" />
+
+    <MenuItem Text="Cerrar sesión" Command="{Binding LogoutCommand}" />
+</Shell>

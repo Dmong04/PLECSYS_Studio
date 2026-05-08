@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PLECSYS_Studio.Views.HomePage"
+             BackgroundColor="{StaticResource PageBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid Row="0"
+          BackgroundColor="{StaticResource PrimaryDarkBlue}"
+          HeightRequest="50"
+          Padding="16,10"
+          ColumnDefinitions="Auto,*,Auto">
+
+            <ImageButton
+            Grid.Column="0"
+            Source="menu.png"
+            WidthRequest="24"
+            HeightRequest="24"
+            Aspect="AspectFit"
+            Clicked="OnOpenMenuClicked"/>
+
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout Padding="16" Spacing="18">
+
+                <Border Stroke="{StaticResource PrimaryDarkBlue}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="1"
+                WidthRequest="160"
+                HeightRequest="40"
+                VerticalOptions="Center"
+                HorizontalOptions="Start"
+                Padding="10,0">
+
+                    <Grid
+                    ColumnDefinitions="Auto, *"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center">
+
+                        <Image
+                        Source="calendar.png"
+                        Background="Transparent"
+                        WidthRequest="22"
+                        HeightRequest="22"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        Aspect="AspectFit"/>
+
+                        <Grid
+                        Grid.Column="1"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        HeightRequest="40"
+                        Padding="2">
+
+                            <DatePicker
+                            x:Name="MainDatePicker"
+                            Format="dd/MM/yyyy"
+                            TextColor="{StaticResource PrimaryDarkBlue}"
+                            BackgroundColor="Transparent"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Start"
+                            Margin="5,0,0,0"
+                            DateSelected="OnDateSelected" />
+
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <StackLayout>
+                    <Grid>
+                        <Label Text="Hoy"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource PrimaryDarkBlue}"
+                           VerticalOptions="Center"/>
+
+                        <Image
+                        x:Name="TodayArrow"
+                        Source="expand.png"
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTodayArrowTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Grid>
+
+                    <Border
+                    x:Name="TodayContent"
+                    Stroke="{StaticResource PrimaryDarkBlue}"
+                    StrokeThickness="1"
+                    BackgroundColor="Transparent"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="12"
+                    Margin="0,8">
+                        <Label
+                        Text="No hay notificaciones que mostrar"
+                        HorizontalOptions="Center"
+                        TextColor="{StaticResource MediumGray}" />
+                    </Border>
+                </StackLayout>
+
+                <StackLayout>
+                    <Grid>
+                        <Label Text="Hace una semana"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource PrimaryDarkBlue}"
+                           VerticalOptions="Center"/>
+
+                        <Image
+                        x:Name="WeekArrow"
+                        Source="expand.png"
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnWeekArrowTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Grid>
+
+                    <Border
+                    x:Name="WeekContent"
+                    Stroke="{StaticResource PrimaryDarkBlue}"
+                    StrokeThickness="1"
+                    BackgroundColor="Transparent"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="12"
+                    Margin="0,8">
+                        <Label
+                        Text="No hay notificaciones que mostrar"
+                        HorizontalOptions="Center"
+                        TextColor="{StaticResource MediumGray}" />
+                    </Border>
+
+                </StackLayout>
+
+                <StackLayout>
+                    <Grid>
+                        <Label Text="Hace un mes"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource PrimaryDarkBlue}"
+                           VerticalOptions="Center"/>
+
+                        <Image
+                        x:Name="MonthArrow"
+                        Source="expand.png"
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnMonthArrowTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Grid>
+
+
+                    <Border
+                    x:Name="MonthContent"
+                    Stroke="{StaticResource PrimaryDarkBlue}"
+                    StrokeThickness="1"
+                    BackgroundColor="Transparent"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="12"
+                    Margin="0,8">
+                        <Label
+                        Text="No hay notificaciones que mostrar"
+                        HorizontalOptions="Center"
+                        TextColor="{StaticResource MediumGray}" />
+                    </Border>
+
+
+                </StackLayout>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

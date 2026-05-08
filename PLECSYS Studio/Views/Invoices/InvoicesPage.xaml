@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="PLECSYS_Studio.Views.Invoices.InvoicesPage"
+             BackgroundColor="{StaticResource PageBackground}"
+             Shell.NavBarIsVisible="True"
+             Shell.BackgroundColor="{StaticResource PrimaryDarkBlue}"
+             x:Name="Root">
+
+    <ContentPage.Content>
+
+        <Grid RowDefinitions="Auto,Auto,Auto,*">
+
+            <!-- Encabezado -->
+            <VerticalStackLayout Grid.Row="0" Padding="20,10,20,5" Spacing="6">
+                <HorizontalStackLayout Spacing="8"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center">
+
+                    <Image Source="invoice.png"
+                           WidthRequest="22"
+                           HeightRequest="22"
+                           Aspect="AspectFit"
+                           VerticalOptions="Center"/>
+
+                    <Label Text="Lista de Facturas"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource PrimaryDarkBlue}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+
+                <BoxView HeightRequest="1"
+                         Color="{StaticResource MediumGray}"
+                         HorizontalOptions="Fill"/>
+            </VerticalStackLayout>
+
+            <!-- Barra de búsqueda y filtros -->
+            <VerticalStackLayout Grid.Row="1" Padding="15,10" Spacing="10">
+
+                <!-- SearchBar -->
+                <Border Background="Transparent"
+                        Stroke="{StaticResource MediumGray}" StrokeThickness="1">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Border.StrokeShape>
+
+                    <SearchBar 
+                        Placeholder="Buscar..."
+                        Text="{Binding SearchText, Mode=TwoWay}"
+                        SearchCommand="{Binding SearchCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource StrongGray}"
+                        PlaceholderColor="{StaticResource MediumGray}"
+                        HeightRequest="40"
+                        FontSize="14"
+                        VerticalOptions="Center"
+                        Margin="0"/>
+                </Border>
+
+                <!-- Filtros -->
+                <HorizontalStackLayout Spacing="10" HorizontalOptions="Start">
+
+                    <!-- Filtro por fecha -->
+                    <Border Stroke="{StaticResource MediumGray}"
+                            StrokeThickness="1"
+                            BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="0"
+                            HeightRequest="40"
+                            WidthRequest="120">
+                        <DatePicker
+                            FontSize="12"
+                            Date="{Binding DateFilter.SelectedDate, Mode=TwoWay}"
+                            Format="dd/MM/yyyy"
+                            TextColor="{StaticResource PrimaryDarkBlue}"
+                            HorizontalOptions="Center"/>
+
+                    </Border>
+
+                    <!-- Filtro por moneda -->
+                    <Border Stroke="{StaticResource MediumGray}"
+                            StrokeThickness="1"
+                            BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="0"
+                            HeightRequest="40"
+                            WidthRequest="120">
+
+                        <Picker
+                            Title="Moneda"
+                            FontSize="12"
+                            ItemsSource="{Binding CurrencyFilter.CurrencyOptions}"
+                            SelectedItem="{Binding CurrencyFilter.SelectedCurrency, Mode=TwoWay}"
+                            ItemDisplayBinding="{Binding Currency_code}"
+                            HorizontalOptions="Center"
+                            WidthRequest="100">
+                            <Picker.Behaviors>
+                                <toolkit:EventToCommandBehavior
+                                    EventName="SelectedIndexChanged"
+                                    Command="{Binding CurrencyFilter.FilterByCurrencyCommand}"
+                                    CommandParameter="{Binding BindingContext.Invoices, Source={x:Reference Root}}" />
+                            </Picker.Behaviors>
+                        </Picker>
+
+                    </Border>
+
+                    <!-- Filtro por cliente -->
+                    <Border Stroke="{StaticResource MediumGray}"
+                            StrokeThickness="1"
+                            BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="0"
+                            HeightRequest="40"
+                            WidthRequest="150">
+
+                        <Picker
+                            Title="Cliente"
+                            ItemsSource="{Binding ClientFilter.ClientOptions}"
+                            SelectedItem="{Binding ClientFilter.SelectedClient, Mode=TwoWay}"
+                            ItemDisplayBinding="{Binding DisplayName}"
+                            HorizontalOptions="Center"
+                            WidthRequest="150">
+                            <Picker.Behaviors>
+                                <toolkit:EventToCommandBehavior
+                                    EventName="SelectedIndexChanged"
+                                    Command="{Binding ClientFilter.FilterByClientCommand}"
+                                    CommandParameter="{Binding BindingContext.Invoices, Source={x:Reference Root}}" />
+                            </Picker.Behaviors>
+                        </Picker>
+
+                    </Border>
+
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- Lista de facturas -->
+            <RefreshView Grid.Row="3"
+                         Command="{Binding LoadInvoicesCommand}"
+                         IsRefreshing="{Binding IsBusy}">
+                <CollectionView ItemsSource="{Binding Invoices}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Stroke="{StaticResource LightGray}" Padding="15" Margin="5">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20"/>
+                                </Border.StrokeShape>
+
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="{Binding Consecutive, StringFormat='Número de factura: {0}'}"
+                                           FontAttributes="Bold" FontSize="15"
+                                           TextColor="{StaticResource PrimaryDarkBlue}" />
+                                    <Label Text="{Binding Total_voucher, StringFormat='Total: ₡{0:N0}'}"
+                                           FontSize="14" TextColor="{StaticResource PrimaryDarkBlue}" />
+                                    <Label Text="{Binding User.Email}"
+                                           FontSize="13" TextColor="{StaticResource MediumGray}" />
+                                    <Label Text="{Binding Sell_company.Company_name}"
+                                           FontSize="13" TextColor="{StaticResource MediumGray}" />
+                                    <Label Text="{Binding Charged_company.Company_name}"
+                                           FontSize="13" TextColor="{StaticResource MediumGray}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+
+        </Grid>
+
+    </ContentPage.Content>
+</ContentPage>

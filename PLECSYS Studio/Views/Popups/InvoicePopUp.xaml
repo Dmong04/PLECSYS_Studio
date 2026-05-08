@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    x:Class="PLECSYS_Studio.Views.Popups.InvoicePopUp">
+
+    <Border 
+        BackgroundColor="{StaticResource White}" 
+        Padding="20"
+        WidthRequest="320"
+        HeightRequest="420"
+        Stroke="{StaticResource LightGray}">
+
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="15"/>
+        </Border.StrokeShape>
+
+        <VerticalStackLayout Spacing="15">
+
+            <Grid ColumnDefinitions="*,Auto">
+
+                <Label 
+                    Grid.Column="0"
+                    Text="Detalles"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    TextColor="{StaticResource PrimaryDarkBlue}"
+                    VerticalOptions="Center"/>
+
+                <Button Text="X" 
+                        Grid.Column="1"
+                        Command="{Binding ClosePopupCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource MediumGray}"
+                        FontSize="18"
+                        WidthRequest="30"
+                        HeightRequest="30"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"/>
+
+            </Grid>
+
+            <StackLayout Spacing="5">
+
+                <Label Text="{Binding Consecutive, StringFormat='Numero de factura: {0}'}" 
+                       FontSize="16"
+                       TextColor="{StaticResource Black}"/>
+
+                <Label Text="{Binding Total_voucher, StringFormat='Total: ₡{0:N0}'}"
+                       FontSize="15"
+                       TextColor="{StaticResource Black}"/>
+
+                <Label Text="{Binding User_creator_id, StringFormat='Cliente: {0}'}"
+                       FontSize="15"
+                       TextColor="{StaticResource MediumGray}"/>
+
+            </StackLayout>
+
+
+            <VerticalStackLayout Spacing="10">
+
+                
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                        StrokeShape="RoundRectangle 25"
+                        HeightRequest="45"
+                        WidthRequest="210"
+                        Padding="10"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding DownloadPdfCommand}" />
+                    </Border.GestureRecognizers>
+
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Image Source="pdf.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               Aspect="AspectFit"/>
+
+                        <Label Text="Descargar PDF"
+                               VerticalOptions="Center"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <VerticalStackLayout Spacing="5"
+                                     IsVisible="{Binding IsDownloading}"
+                                     HorizontalOptions="Center">
+                    
+                    <ActivityIndicator IsRunning="{Binding IsDownloading}"/>
+                    
+                    <ProgressBar Progress="{Binding DownloadProgress}"
+                                 WidthRequest="280"/>
+
+                    <Label Text="{Binding DownloadProgress, StringFormat='Descargando... {0:P0}'}"
+                           FontSize="13"
+                           TextColor="{StaticResource MediumGray}"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                        StrokeShape="RoundRectangle 25"
+                        HeightRequest="45"
+                        WidthRequest="210"
+                        Padding="10"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        x:Name="ThisPopupBorder">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRegisterPaymentTapped" />
+                    </Border.GestureRecognizers>
+
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Image Source="payment.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               Aspect="AspectFit"/>
+
+                        <Label Text="Registrar pago"
+                               VerticalOptions="Center"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+                    </HorizontalStackLayout>
+                </Border>
+
+
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                        StrokeShape="RoundRectangle 25"
+                        HeightRequest="45"
+                        WidthRequest="210"
+                        Padding="10"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding RegisterClaimCommand}" />
+                    </Border.GestureRecognizers>
+
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Image Source="claim.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               Aspect="AspectFit"/>
+
+                        <Label Text="Reclamo"
+                               VerticalOptions="Center"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                        StrokeShape="RoundRectangle 25"
+                        HeightRequest="45"
+                        WidthRequest="210"
+                        Padding="10"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenHistoryCommand}" />
+                    </Border.GestureRecognizers>
+
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Image Source="history.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               Aspect="AspectFit"/>
+
+                        <Label Text="Historico"
+                               VerticalOptions="Center"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+                    </HorizontalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+
+    </Border>
+
+</views:Popup>

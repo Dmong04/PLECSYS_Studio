@@ -1,0 +1,66 @@
+﻿@using PLECSYS_Studio.Data.Companies
+@using PLECSYS_Studio.Models
+@using PLECSYS_Studio.Wrappers.Companies
+@inject CompanyService companyService
+
+<div class="text-sm block">
+    <div>
+        <label>Nombre cliente</label><br />
+        <select @bind="invoice.Sell_company.Company_id" class="border rounded-lg p-2 m-2 gap-4">
+            <option value="0">Seleccionar</option>
+            @foreach (var company in companies)
+            {
+                <option value="@company.Company_id">@company.Company_name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label>Tipo documento</label><br />
+        <select class="border rounded-lg p-2 m-2">
+            <option value="Dereck Monge Chaves">Dereck Monge Chaves</option>
+            <option value="Rachell Dávila Sánchez">Rachell Dávila Sánchez</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Actividad económica</label> <br />
+        <select class="border rounded-lg p-2 m-2">
+            <option value="Dereck Monge Chaves">Dereck Monge Chaves</option>
+            <option value="Rachell Dávila Sánchez">Rachell Dávila Sánchez</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Actividad económica del cliente</label> <br />
+        <select class="border rounded-lg p-2 m-2">
+            <option value="Dereck Monge Chaves">Dereck Monge Chaves</option>
+            <option value="Rachell Dávila Sánchez">Rachell Dávila Sánchez</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Fecha de venta</label><br />
+        <input type="date" class="border rounded-lg p-2 m-2"/>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Invoice invoice { get; set; } = new();
+
+    private List<CompanyResponse> companies = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (invoice.Sell_company is null)
+        {
+            invoice.Sell_company = new Company();
+        }
+
+        var response = await companyService.LoadCompanies();
+        if (response.Success && response.Data is not null)
+        {
+            companies = response.Data;
+        }
+    }
+}

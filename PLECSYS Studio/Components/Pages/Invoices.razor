@@ -1,0 +1,93 @@
+﻿@page "/Invoices"
+@using PLECSYS_Studio.Components.InvoiceTabs
+@using PLECSYS_Studio.Models
+
+<section class="bg-zinc-300 rounded-lg mx-4 flex justify-between p-3 text-blue-950 items-center">
+    <h1>Acciones</h1>
+    <button @onclick="ActionsMenu" class="px-2 py-2 bg-zinc-700 text-white rounded-full hover:bg-zinc-900">
+        <img src="imgs/icon-menu-96.png" alt="Menu" class="size-6">
+    </button>
+</section>
+
+<!--Menú desplegable de acciones-->
+<div class="@ActionsMenuCss" @onclick:stopPropagation="true">
+    <NavLink href="/SalesMenu" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Regresar</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Consulta de facturas</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Archivados</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Importar línea desde excel</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Descargar plantilla</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Registrar</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Agregar línea detalle</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Agregar descuento general</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Agregar exoneración general</NavLink>
+    <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Agregar vendedor</NavLink>
+</div>
+
+<div class="flex border-b mx-4">
+    <TabButton TabKey="InvoicesHeader" ActiveTab="@ActiveTab" OnClick="@(() => ActiveTab = "InvoicesHeader")">
+        Encabezado
+    </TabButton>
+    <TabButton TabKey="InvoicesCharges" ActiveTab="@ActiveTab" OnClick="@(() => ActiveTab = "InvoicesCharges")">
+        Cargos
+    </TabButton>
+    <TabButton TabKey="InvoicesReferences" ActiveTab="@ActiveTab" OnClick="@(() => ActiveTab = "InvoicesReferences")">
+        Referencias
+    </TabButton>
+</div>
+
+<div class="border rounded p-4 bg-white shadow">
+    @switch (ActiveTab)
+    {
+        case "InvoicesHeader":
+            <InvoicesHeader invoice="@invoice" />
+            break;
+        case "InvoicesCharges":
+            <InvoicesCharges Model="@invoice" />
+            break;
+        case "InvoicesReferences":
+            <InvoicesReferences Model="@invoice" />
+            break;
+    }
+</div>
+
+@code {
+    private bool isMenuOpen = false;
+
+    // CSS dinámico según estado
+    private string ActionsMenuCss => isMenuOpen
+        ? "opacity-100 scale-100 pointer-events-auto transform transition-all duration-300 ease-out absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10"
+        : "opacity-0 scale-95 pointer-events-none transform transition-all duration-300 ease-out absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10";
+
+    private void ActionsMenu()
+    {
+        isMenuOpen = !isMenuOpen;
+    }
+
+    // Cierra el menú si haces click fuera
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Suscribirse al evento global de click
+            var dotNetRef = DotNetObjectReference.Create(this);
+            JS.InvokeVoidAsync("registerOutsideClick", dotNetRef);
+        }
+    }
+
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    [JSInvokable]
+    public void CloseMenu()
+    {
+        isMenuOpen = false;
+        StateHasChanged();
+    }
+
+    private Invoice invoice = new();
+    private string ActiveTab = "InvoicesHeader";
+
+    private string GetTabClass(string tab) =>
+    tab == ActiveTab
+        ? "bg-blue-600 text-white py-2 rounded shadow"
+        : "bg-zinc-300 text-blue-900 py-2 rounded border border-zinc-300 hover:bg-zinc-200";
+}

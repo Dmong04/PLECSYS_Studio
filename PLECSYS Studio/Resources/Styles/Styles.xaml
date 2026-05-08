@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Main Button -->
+    <Style x:Key="DefaultButton" TargetType="Button">
+
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBlue}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="14,10" />
+        <Setter Property="MinimumHeightRequest" Value="48" />
+        <Setter Property="MinimumWidthRequest" Value="44" />
+
+        <Setter Property="VisualStateManager.VisualStateGroups">
+
+            <VisualStateGroupList>
+
+                <VisualStateGroup x:Name="CommonStates">
+
+                    <VisualState x:Name="Normal" />
+
+                    <VisualState x:Name="Disabled">
+
+                        <VisualState.Setters>
+
+                            <Setter Property="BackgroundColor" Value="{StaticResource LightGray}" />
+                            <Setter Property="TextColor" Value="{StaticResource StrongGray}" />
+
+                        </VisualState.Setters>
+                    </VisualState>
+
+                    <VisualState x:Name="Pressed">
+
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDarkBlue}" />
+
+                        </VisualState.Setters>
+                    </VisualState>
+
+                </VisualStateGroup>
+
+            </VisualStateGroupList>
+
+        </Setter>
+
+    </Style>
+
+    <!-- Secondary Button-->
+    <Style x:Key="BaseButton" TargetType="Button">
+
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDarkBlue}" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+
+    </Style>
+
+    <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBlue}" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+
+    </Style>
+
+    <!-- Label -->
+    <Style x:Key="Label" TargetType="Label">
+
+        <Setter Property="TextColor" Value="{StaticResource PrimaryDarkBlue}" />
+        <Setter Property="FontFamily" Value="Helvetica Neue" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+
+    </Style>
+
+    <Style x:Key="TitleLabel" TargetType="Label" BasedOn="{StaticResource Label}">
+
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="TextColor" Value="{StaticResource Black}" />
+
+    </Style>
+
+    <!-- Entry -->
+    <Style TargetType="Entry">
+
+        <Setter Property="HeightRequest" Value="44" />
+        <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+        <Setter Property="Margin" Value="0,6" />
+        <Setter Property="TextColor" Value="{StaticResource BlackBrush}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource MediumGray}" />
+
+    </Style>
+
+    <!-- Page -->
+    <Style TargetType="Page" ApplyToDerivedTypes="True">
+
+        <Setter Property="BackgroundColor" Value="{StaticResource PageBackground}" />
+        <Setter Property="Padding" Value="0" />
+
+    </Style>
+
+    <!-- Shell -->
+    <Style TargetType="Shell" ApplyToDerivedTypes="True">
+
+        <Setter Property="Shell.BackgroundColor" Value="{StaticResource PageBackground}" />
+        <Setter Property="Shell.TitleColor" Value="{StaticResource PrimaryDarkBlue}" />
+        <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource PrimaryBlue}" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource MediumGray}" />
+
+    </Style>
+
+</ResourceDictionary>

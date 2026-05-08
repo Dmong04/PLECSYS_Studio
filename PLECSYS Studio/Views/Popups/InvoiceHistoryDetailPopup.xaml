@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+             x:Class="PLECSYS_Studio.Views.Popups.InvoiceHistoryDetailPopup">
+
+    <Border BackgroundColor="{StaticResource White}"
+            Padding="18"
+            WidthRequest="320"
+            HeightRequest="360"
+            Stroke="{StaticResource LightGray}">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="15"/>
+        </Border.StrokeShape>
+
+        <VerticalStackLayout Spacing="12">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Detalle" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryDarkBlue}" />
+                <Button Grid.Column="1" Text="X" BackgroundColor="Transparent" TextColor="{StaticResource MediumGray}" Clicked="OnCloseClicked" />
+            </Grid>
+
+            <Label x:Name="ActionLabel" FontAttributes="Bold" TextColor="{StaticResource PrimaryDarkBlue}" />
+            <Label x:Name="DateLabel" TextColor="{StaticResource PrimaryDarkBlue}" />
+            <Border Stroke="{StaticResource PrimaryDarkBlue}" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="10" HeightRequest="200">
+                <ScrollView>
+                    <Label x:Name="DescriptionLabel" TextColor="{StaticResource PrimaryDarkBlue}" />
+                </ScrollView>
+            </Border>
+        </VerticalStackLayout>
+    </Border>
+</views:Popup>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell 
+    x:Class="PLECSYS_Studio.LoginShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:login="clr-namespace:PLECSYS_Studio"
+    xmlns:home="clr-namespace:PLECSYS_Studio.Views"
+    xmlns:signup="clr-namespace:PLECSYS_Studio.Views.SignUp">
+
+    <Shell.FlyoutBehavior>Disabled</Shell.FlyoutBehavior>
+
+    <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate login:MainPage}" />
+
+    <ShellContent Route="SignUpPage" ContentTemplate="{DataTemplate signup:SignUpPage}" />
+
+</Shell>

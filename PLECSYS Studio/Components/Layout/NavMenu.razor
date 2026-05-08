@@ -1,0 +1,65 @@
+﻿<header class="bg-blue-950 text-white flex justify-between p-4 items-center">
+    <section>
+        <h1>PLECSYS Studio</h1>
+    </section>
+
+    <section>
+        <div class="relative inline-block text-left">
+            <!-- Botón que abre/cierra el menú -->
+            <button @onclick="ToggleMenu" class="px-2 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-900">
+                <img src="imgs/menu.png" alt="Usuario" class="size-6">
+            </button>
+
+            <!-- Menú desplegable -->
+            <div class="@MenuCss"
+                 @onclick:stopPropagation="true">
+                <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Perfil
+                </NavLink>
+                <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Configuración
+                </NavLink>
+                <NavLink href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Accesibilidad
+                </NavLink>
+                <NavLink href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100">
+                    Cerrar sesión
+                </NavLink>
+            </div>
+        </div>
+    </section>
+</header>
+
+@code {
+    private bool isMenuOpen = false;
+
+    // CSS dinámico según estado
+    private string MenuCss => isMenuOpen
+        ? "opacity-100 scale-100 pointer-events-auto transform transition-all duration-300 ease-out absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10"
+        : "opacity-0 scale-95 pointer-events-none transform transition-all duration-300 ease-out absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10";
+
+    private void ToggleMenu()
+    {
+        isMenuOpen = !isMenuOpen;
+    }
+
+    // Cierra el menú si haces click fuera
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Suscribirse al evento global de click
+            var dotNetRef = DotNetObjectReference.Create(this);
+            JS.InvokeVoidAsync("registerOutsideClick", dotNetRef);
+        }
+    }
+
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    [JSInvokable]
+    public void CloseMenu()
+    {
+        isMenuOpen = false;
+        StateHasChanged();
+    }
+}

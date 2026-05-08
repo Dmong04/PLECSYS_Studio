@@ -1,0 +1,20 @@
+<button @onclick="HandleClick" class="@GetClass()">
+    @ChildContent
+</button>
+
+@code {
+    [Parameter] public string TabKey { get; set; } = "";
+    [Parameter] public string ActiveTab { get; set; } = "";
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private async Task HandleClick()
+    {
+        await OnClick.InvokeAsync(null);
+    }
+
+    private string GetClass() =>
+    TabKey == ActiveTab
+        ? "bg-blue-950 text-white p-2 mt-4 rounded shadow text-sm"
+        : "bg-zinc-300 text-blue-900 p-2 mt-4 rounded border border-zinc-300 text-sm hover:bg-zinc-200";
+}

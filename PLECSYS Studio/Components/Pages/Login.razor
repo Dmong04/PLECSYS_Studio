@@ -1,0 +1,70 @@
+﻿@page "/"
+@layout EmptyLayout
+
+@using PLECSYS_Studio.Components.Layout
+@using PLECSYS_Studio.Handlers
+@inject LoginHandler _handler
+@inject NavigationManager nav
+
+<div class="layout-col bg-white mt-4">
+    <div class="flex justify-center text-2xl text-bold">
+        <!--Acá va el logo-->
+        <h2 class="text-gray-700">PLECSYS</h2>
+    </div>
+
+    <div class="mx-4 mt-4">
+        <h1>Inicio de sesión</h1>
+    </div>
+
+    <div class="mx-4 mt-2">
+        <input type="email" placeholder="Correo electrónico"
+               class="my-2 w-72 bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-primaryBlue transition duration-200"
+               @bind="_handler.Email" />
+
+        <input type="password" placeholder="Contraseña"
+               class="my-2 w-72 bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-primaryBlue transition duration-200"
+               @bind="_handler.Password" /><br />
+        <span class="text-sm">¿Olvidó su contraseña? <a href="#" class="text-orange-400">Recuperar</a></span>
+    </div>
+
+    <div class="flex justify-center mt-2">
+        <button class="bg-blue-900 text-white items-center text-center px-5 py-2 rounded-lg"
+                @onclick="async () => await _handler.Login()">
+            Acceder
+        </button>
+    </div>
+
+    <div class="flex justify-center mt-4">
+        <span class="text-sm">¿Aún no tiene una cuenta? <a class="text-orange-400" @onclick="GoToRegister">Registrarse</a></span>
+        <hr class="bg-blue-950" />
+    </div>
+
+    <div class="block text-center m-4">
+        <button class="w-full bg-blue-900 text-white px-4 py-2 rounded-lg m-2">
+            Iniciar sesión con Microsoft
+        </button>
+        <button class="w-full bg-blue-900 text-white px-4 py-2 rounded-lg m-2">
+            Iniciar sesión con Google
+        </button>
+    </div>
+
+    <footer class="relative w-full footer-push">
+        <svg class="block w-full h-32" viewBox="0 0 500 150" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Primera ola: PrimaryBlue -->
+            <path d="M0,80 C150,150 300,50 500,120 L500,150 L0,150 Z" fill="#1e3a8a" />
+            <!-- Segunda ola: PrimaryDarkBlue -->
+            <path d="M0,100 C150,0 300,200 500,100 L500,150 L0,150 Z" fill="#172554" />
+        </svg>
+
+        <div class="bg-blue-950 text-white py-6 text-center">
+            <p class="text-sm p-2">© 2025 PLECSYS Studio. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</div>
+
+@code {
+    async Task GoToRegister()
+    {
+        await Shell.Current.GoToAsync("//SignUpPage");
+    }
+}

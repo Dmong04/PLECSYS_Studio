@@ -1,0 +1,72 @@
+﻿@page "/Home"
+
+<div class="min-h-screen">
+    <!-- Scrollable content -->
+    <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+
+        <!-- Date Picker -->
+        <div class="w-40 h-10 flex items-center rounded-lg border px-3">
+            <img src="./imgs/calendar.png" alt="calendar" class="w-5 h-5 object-contain" />
+            <input type="date" class="ml-2 h-8 bg-transparent focus:outline-none" />
+        </div>
+
+        <!-- Hoy -->
+        <div>
+            <div class="flex items-center justify-between my-4">
+                <span class="text-lg font-bold">Hoy</span>
+                <img src="./imgs/expand.png" alt="expand hoy"
+                     class="w-5 h-5 cursor-pointer"
+                     @onclick="ToggleToday" />
+            </div>
+            @if (showHoy)
+            {
+                <div class="rounded-lg border mt-2 p-3">
+                    <p class="text-center text-sm">No hay notificaciones que mostrar</p>
+                </div>
+            }
+        </div>
+
+        <!-- Hace una semana -->
+        <div>
+            <div class="flex items-center justify-between my-4">
+                <span class="text-lg font-bold">Hace una semana</span>
+                <img src="./imgs/expand.png" alt="expand semana"
+                     class="w-5 h-5 cursor-pointer"
+                     @onclick="ToggleWeek" />
+            </div>
+            @if (showSemana)
+            {
+                <div class="rounded-lg border mt-2 p-3">
+                    <p class="text-center text-sm">No hay notificaciones que mostrar</p>
+                </div>
+            }
+        </div>
+
+        <!-- Hace un mes -->
+        <div>
+            <div class="flex items-center justify-between my-4">
+                <span class="text-lg font-bold">Hace un mes</span>
+                <img src="./imgs/expand.png" alt="expand mes"
+                     class="w-5 h-5 cursor-pointer"
+                     @onclick="ToggleMonth" />
+            </div>
+            @if (showMes)
+            {
+                <div class="rounded-lg border mt-2 p-3">
+                    <p class="text-center text-sm">No hay notificaciones que mostrar</p>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private bool showHoy = false;
+    private bool showSemana = false;
+    private bool showMes = false;
+
+    private void ToggleToday() => showHoy = !showHoy;
+    private void ToggleWeek() => showSemana = !showSemana;
+    private void ToggleMonth() => showMes = !showMes;
+}

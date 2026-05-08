@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PLECSYS_Studio.ViewModels.Claims"
+             x:Class="PLECSYS_Studio.Views.Claims.RegisterClaimPage"
+			 BackgroundColor="{StaticResource PageBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        
+        <Grid BackgroundColor="{StaticResource PrimaryDarkBlue}" HeightRequest="50" Padding="16,15" ColumnDefinitions="Auto,*">
+
+            <ImageButton Source="goback.png" WidthRequest="24" HeightRequest="24"
+                         Background="Transparent"
+                         Command="{Binding GoBackCommand}"/>
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="1" Padding="24,12,24,6" Spacing="4">
+            <Label Text="Reclamo" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryDarkBlue}" HorizontalOptions="Center"/>
+            <BoxView HeightRequest="1" BackgroundColor="{StaticResource MediumGray}" HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="24,20" Spacing="14" HorizontalOptions="Center" WidthRequest="330">
+
+                <Label Text="{Binding InvoiceConsecutive, StringFormat='Número de factura: {0}'}"
+                       FontAttributes="Bold" FontSize="16" TextColor="{StaticResource PrimaryDarkBlue}" />
+
+                <Label Text="Fecha del reclamo" FontAttributes="Bold" TextColor="{StaticResource PrimaryDarkBlue}" />
+                <Border Stroke="{StaticResource PrimaryDarkBlue}" StrokeThickness="1" BackgroundColor="Transparent"
+                        HorizontalOptions="Fill" HeightRequest="48" StrokeShape="RoundRectangle 8" Padding="6,0">
+                    <DatePicker Date="{Binding RecordDate}" Format="dd/MM/yyyy" BackgroundColor="Transparent"
+                                TextColor="{StaticResource PrimaryDarkBlue}" />
+                </Border>
+
+                <Label Text="Monto (opcional)" FontAttributes="Bold" TextColor="{StaticResource PrimaryDarkBlue}" />
+                <Border Stroke="{StaticResource PrimaryDarkBlue}" StrokeThickness="1" BackgroundColor="Transparent"
+                        HorizontalOptions="Fill" HeightRequest="48" StrokeShape="RoundRectangle 8" Padding="6,0">
+                    <Entry Placeholder="0.00" Keyboard="Numeric" Text="{Binding ClaimAmountText}"
+                           BackgroundColor="Transparent" TextColor="{StaticResource PrimaryDarkBlue}" FontSize="14"/>
+                </Border>
+
+                <Label Text="Descripción del reclamo" FontAttributes="Bold" TextColor="{StaticResource PrimaryDarkBlue}" />
+                <Border Stroke="{StaticResource PrimaryDarkBlue}" StrokeThickness="2" BackgroundColor="Transparent"
+                        HorizontalOptions="Fill" StrokeShape="RoundRectangle 8" Padding="6,2" HeightRequest="120">
+                    <Editor Placeholder="Explique el reclamo..." Text="{Binding Description}" AutoSize="Disabled"
+                            BackgroundColor="Transparent" TextColor="{StaticResource PrimaryDarkBlue}" FontSize="14"/>
+                </Border>
+
+                <Label Text="Adjuntos (PDF/JPG/PNG, máx 5MB, hasta 5 archivos)" FontSize="12"
+                       TextColor="{StaticResource MediumGray}" />
+
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                        StrokeShape="RoundRectangle 8"
+                        HeightRequest="40"
+                        WidthRequest="70"
+                        Padding="10"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PickFilesCommand}" />
+                    </Border.GestureRecognizers>
+
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Image Source="addfile.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               Aspect="AspectFit"/>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <CollectionView ItemsSource="{Binding Attachments}" HeightRequest="100">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Stroke="{StaticResource LightGray}" Padding="10" Margin="4" StrokeShape="RoundRectangle 12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="{Binding FileName}" TextColor="{StaticResource PrimaryDarkBlue}" />
+                                    <Button Grid.Column="1" Text="Borrar"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RegisterClaimViewModel}}, Path=RemoveAttachmentCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="{StaticResource AccentOrange}"
+                                            TextColor="White" CornerRadius="10" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                        StrokeShape="RoundRectangle 25"
+                        HeightRequest="45"
+                        WidthRequest="100"
+                        Padding="10"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SaveCommand}" />
+                    </Border.GestureRecognizers>
+
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Label Text="Guardar"
+                               VerticalOptions="Center"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <ActivityIndicator IsRunning="{Binding IsSaving}" IsVisible="{Binding IsSaving}" />
+
+            </VerticalStackLayout>
+            
+        </ScrollView>
+        
+    </Grid>
+
+</ContentPage>

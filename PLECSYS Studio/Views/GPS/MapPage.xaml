@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+    x:Class="PLECSYS_Studio.Views.GPS.MapPage"
+    Title="Registrar Ubicación">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label Text="Registro de Ubicación"
+               FontSize="22"
+               HorizontalOptions="Center"
+               FontAttributes="Bold" />
+
+        <maps:Map x:Name="UserMap"
+                  HeightRequest="300"
+                  IsShowingUser="True" />
+
+
+        <Button Text="Guardar ubicación"
+        Command="{Binding SaveLocationCommand}"
+        BackgroundColor="{StaticResource PrimaryDarkBlue}"
+        TextColor="{StaticResource White}"
+        CornerRadius="8"
+        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}" />
+
+        <!-- Estate -->
+        <Label Text="{Binding StatusMessage}"
+               FontSize="16"
+               HorizontalOptions="Center"
+               VerticalOptions="End" />
+
+    </VerticalStackLayout>
+
+</ContentPage>

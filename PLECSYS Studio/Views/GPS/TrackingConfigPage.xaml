@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PLECSYS_Studio.ViewModels.GPS"
+             x:Class="PLECSYS_Studio.Views.GPS.TrackingConfigPage"
+             x:DataType="vm:TrackingConfigViewModel"
+             Title="Configurar intervalo de rastreo">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="20">
+
+            <Label Text="Configurar Intervalo de Rastreo"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
+
+            <!-- Mail -->
+            <Label Text="Correo del vendedor"/>
+            <Entry Placeholder="ejemplo@plecsys.net"
+                   Text="{Binding SellerId}"
+                   Keyboard="Email"/>
+
+            <!-- Interval -->
+            <Label Text="Intervalo en minutos"/>
+            <Entry Placeholder="Ej: 5"
+                   Text="{Binding IntervalMinutes}"
+                   Keyboard="Numeric"/>
+
+            <!-- Result Message -->
+            <Label Text="{Binding Message}"
+                   TextColor="{Binding IsSuccess, Converter={StaticResource BoolToColorConverter}}"
+                   IsVisible="{Binding Message, Converter={StaticResource StringToBoolConverter}}"/>
+
+            <!-- Button -->
+            <Button Text="Guardar configuración"
+                    Command="{Binding UpdateConfigCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    CornerRadius="8"/>
+            
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="#512BD4"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
