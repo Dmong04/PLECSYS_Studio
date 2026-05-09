@@ -66,7 +66,7 @@ namespace PLECSYS_Studio.Services.Users
                 };
             }
         }
-
+        /*
         public async Task<APIResponse<LoginResponse>> MockLogin(string email, string password)
         {
             try
@@ -114,53 +114,35 @@ namespace PLECSYS_Studio.Services.Users
                     Message = ex.Message,
                 };
             }
-        }
+        }*/
 
         public async Task<APIResponse<LoginResponse>> Login(string email, string password)
         {
             try
             {
-                var request = new LoginRequest()
-                {
-                    email = email,
-                    password = password
-                };
+                var request = new LoginRequest { email = email, password = password };
+                var result = await _data.Login(request);
 
-                var tokenResponse = await _data.Login(request);
-
-                if (string.IsNullOrEmpty(tokenResponse.AccessToken))
+                if (!result.Success || result.Data is null)
                 {
                     IsAuthenticated = false;
-
-                    return new APIResponse<LoginResponse>()
-                    {
-                        Data = new LoginResponse(),
-                        Success = false,
-                        Message = "No se pudo obtener el token."
-                    };
+                    return result;
                 }
 
+                // 👇 Guardar token en preferencias
+                Preferences.Set("access_token", result.Data.access_token ?? string.Empty);
+                Preferences.Set("email", result.Data.email ?? string.Empty);
+
                 IsAuthenticated = true;
-                CurrentUserEmail = tokenResponse.Email;
+                CurrentUserEmail = result.Data.email;
 
-                var loginResponse = new LoginResponse()
-                {
-                    Email = tokenResponse.Email,
-                    Name = tokenResponse.UserName
-                };
-
-                return new APIResponse<LoginResponse>()
-                {
-                    Data = loginResponse,
-                    Success = true,
-                    Message = "Login exitoso"
-                };
+                return result;
             }
             catch (Exception ex)
             {
-                return new APIResponse<LoginResponse>()
+                return new APIResponse<LoginResponse>
                 {
-                    Data = new LoginResponse(),
+                    Data = null,
                     Success = false,
                     Message = $"Hubo un error en el inicio de sesión: {ex.Message}"
                 };

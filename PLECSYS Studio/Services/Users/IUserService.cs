@@ -9,7 +9,7 @@ namespace PLECSYS_Studio.Services.Users
 
         string? CurrentUserEmail { get; }
 
-        Task<APIResponse<LoginResponse>> MockLogin(string email, string password);
+        //Task<APIResponse<LoginResponse>> MockLogin(string email, string password);
 
         Task<APIResponse<LoginResponse>> Login(string email, string password);
 

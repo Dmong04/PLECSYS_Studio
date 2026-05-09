@@ -11,12 +11,18 @@ namespace PLECSYS_Studio.Helpers
     {
         public static void SwitchtoAppShell(ShellViewModel shellViewModel)
         {
-            Application.Current.MainPage = new AppShell(shellViewModel);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Application.Current.MainPage = new AppShell(shellViewModel);
+            });
         }
 
         public static void SwitchtoLoginShell()
         {
-            Application.Current.MainPage = new LoginShell();
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Application.Current.MainPage = new LoginShell();
+            });
         }
     }
 }
