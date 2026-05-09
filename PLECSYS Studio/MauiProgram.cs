@@ -9,6 +9,7 @@ using PLECSYS_Studio.Data.SaleOrders;
 using PLECSYS_Studio.Data.Users;
 using PLECSYS_Studio.Handlers;
 using PLECSYS_Studio.Handlers.GPS;
+using PLECSYS_Studio.Services;
 using PLECSYS_Studio.Services.GPS;
 using PLECSYS_Studio.Services.Invoices;
 using PLECSYS_Studio.Services.Products;
@@ -89,6 +90,7 @@ namespace PLECSYS_Studio
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddSingleton<ITrackingConfigService, TrackingConfigService>();
             builder.Services.AddSingleton<LocationTrackingService>();
+            builder.Services.AddSingleton<SessionService>();
             // Servicios
 
             // ViewModels
@@ -106,6 +108,7 @@ namespace PLECSYS_Studio
             builder.Services.AddScoped<SignUpViewModel>();
             builder.Services.AddScoped<LocationMapViewModel>();
             builder.Services.AddTransient<TrackingConfigViewModel>();
+            builder.Services.AddTransient<CompanySelectionViewModel>();
             // ViewModels
 
             // Shells

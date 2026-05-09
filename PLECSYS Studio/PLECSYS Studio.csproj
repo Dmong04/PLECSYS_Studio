@@ -86,6 +86,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\Popups\CompanySelectionPopup.xaml.cs">
+	    <DependentUpon>CompanySelectionPopup.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Views\Claims\RegisterClaimPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -111,6 +117,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\InvoiceHistoryDetailPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Popups\CompanySelectionPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Popups\InvoicePopUp.xaml">
