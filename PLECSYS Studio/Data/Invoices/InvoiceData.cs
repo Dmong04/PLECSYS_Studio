@@ -1,11 +1,15 @@
 ﻿using PLECSYS_Studio.Models;
+using PLECSYS_Studio.Services;
 using PLECSYS_Studio.Wrappers;
 using PLECSYS_Studio.Wrappers.Invoices;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace PLECSYS_Studio.Data.Invoices
 {
-    public class InvoiceData(IHttpClientFactory factory)
+    public class InvoiceData(IHttpClientFactory factory, SessionService session)
     {
         private readonly HttpClient _http = factory.CreateClient("PLECSYS");
 
@@ -124,6 +128,35 @@ namespace PLECSYS_Studio.Data.Invoices
                 Invoice_date = i.Invoice_date,
                 Currency = i.Currency
             }).ToList();
+        }
+
+        public async Task<APIResponse<List<InvoiceResponse>>> GetInvoicesByExpiryDate(DateTime expiryDate)
+        {
+            var token = session.GetAccessToken();
+            var email = session.GetEmail();
+            var companyId = session.GetCompanyId();
+
+            var payload = new
+            {
+                Email = email,
+                CompanyId = companyId,
+                ExpiryDate = expiryDate
+            };
+
+            using var httpRequest = new HttpRequestMessage(HttpMethod.Post, "invoice/expiry");
+            httpRequest.Content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json");
+            httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _http.SendAsync(httpRequest);
+            var raw = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
+
+            return JsonSerializer.Deserialize<APIResponse<List<InvoiceResponse>>>(
+                raw, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?? new APIResponse<List<InvoiceResponse>> { Data = [], Success = false, Message = "Respuesta vacía" };
         }
     }
 }

@@ -147,5 +147,23 @@ namespace PLECSYS_Studio.Services.Invoices
                 };
             }
         }
+
+        public async Task<APIResponse<List<InvoiceResponse>>> GetInvoicesByExpiryDate(DateTime expiryDate)
+        {
+            try
+            {
+                var result = await _data.GetInvoicesByExpiryDate(expiryDate);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new APIResponse<List<InvoiceResponse>>
+                {
+                    Data = [],
+                    Success = false,
+                    Message = $"Error al cargar facturas por vencimiento: {ex.Message}"
+                };
+            }
+        }
     }
 }
