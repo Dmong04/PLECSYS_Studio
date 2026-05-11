@@ -24,5 +24,11 @@ namespace PLECSYS_Studio.Wrappers.Invoices
         public DateTime Invoice_date { get; set; }
 
         public Currency? Currency { get; set; }
+
+        // 👇 Campos nuevos del endpoint de vencimiento
+        public string? Status { get; set; }
+        public decimal? Pending_balance { get; set; }
+        public DateTime? Created_at { get; set; }
+        public DateTime? Expiry_date { get; set; }
     }
 }
