@@ -32,34 +32,25 @@ namespace PLECSYS_Studio.Data.Users
             return login_result.Data;
         }
 
-        public async Task<TokenResponse> Login(LoginRequest request)
+        public async Task<APIResponse<LoginResponse>> Login(LoginRequest request)
         {
             var payload = new
             {
-                username = request.email,
-                password = request.password
+                Email = request.email,    // 👈 El backend espera Pascal case
+                Password = request.password
             };
 
-            var response = await _http.PostAsJsonAsync("api/auth/login", payload);
-
+            var response = await _http.PostAsJsonAsync("user/login", payload);
+            // 👈 Nuevo endpoint
             var raw = await response.Content.ReadAsStringAsync();
-
             response.EnsureSuccessStatusCode();
 
-            var result = JsonSerializer.Deserialize<TokenResponse>(
+            var result = JsonSerializer.Deserialize<APIResponse<LoginResponse>>(
                 raw,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
             );
 
-            if (result == null || string.IsNullOrWhiteSpace(result.AccessToken))
-                throw new Exception("Respuesta inválida del backend (sin AccessToken).");
-
-            Preferences.Set("access_token", result.AccessToken);
-
-            _http.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.AccessToken);
-
-            return result;
+            return result ?? throw new Exception("Respuesta inválida del servidor.");
         }
 
 

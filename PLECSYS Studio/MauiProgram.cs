@@ -9,6 +9,7 @@ using PLECSYS_Studio.Data.SaleOrders;
 using PLECSYS_Studio.Data.Users;
 using PLECSYS_Studio.Handlers;
 using PLECSYS_Studio.Handlers.GPS;
+using PLECSYS_Studio.Services;
 using PLECSYS_Studio.Services.GPS;
 using PLECSYS_Studio.Services.Invoices;
 using PLECSYS_Studio.Services.Products;
@@ -21,6 +22,8 @@ using PLECSYS_Studio.ViewModels.Invoices;
 using PLECSYS_Studio.ViewModels.Invoices.Filters;
 using PLECSYS_Studio.ViewModels.SaleOrders;
 using PLECSYS_Studio.ViewModels.SaleOrders.Options;
+using PLECSYS_Studio.ViewModels.SmartFlow;
+using PLECSYS_Studio.Views.SmartFlow;
 
 namespace PLECSYS_Studio
 {
@@ -89,6 +92,7 @@ namespace PLECSYS_Studio
             builder.Services.AddScoped<ILocationService, LocationService>();
             builder.Services.AddSingleton<ITrackingConfigService, TrackingConfigService>();
             builder.Services.AddSingleton<LocationTrackingService>();
+            builder.Services.AddSingleton<SessionService>();
             // Servicios
 
             // ViewModels
@@ -106,6 +110,9 @@ namespace PLECSYS_Studio
             builder.Services.AddScoped<SignUpViewModel>();
             builder.Services.AddScoped<LocationMapViewModel>();
             builder.Services.AddTransient<TrackingConfigViewModel>();
+            builder.Services.AddTransient<CompanySelectionViewModel>();
+            builder.Services.AddTransient<SmartFlowPage>();
+            builder.Services.AddTransient<SmartFlowViewModel>();
             // ViewModels
 
             // Shells

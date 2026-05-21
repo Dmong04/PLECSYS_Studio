@@ -19,5 +19,7 @@ namespace PLECSYS_Studio.Services.Invoices
         Task<APIResponse<List<InvoiceResponse>>> GetInvoicesByDate(DateTime date);
 
         Task<APIResponse<InvoiceResponse>> CreateInvoice(InvoiceRequest request);
+
+        Task<APIResponse<List<InvoiceResponse>>> GetInvoicesByExpiryDate(DateTime expiryDate); // 👈
     }
 }

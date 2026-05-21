@@ -1,192 +1,251 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PLECSYS_Studio.ViewModels"
+             xmlns:model="clr-namespace:PLECSYS_Studio.Wrappers.Invoices"
              x:Class="PLECSYS_Studio.Views.HomePage"
+             x:DataType="vm:HomePageViewModel"
              BackgroundColor="{StaticResource PageBackground}"
              Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="Auto,*">
 
+        <!-- Header -->
         <Grid Row="0"
-          BackgroundColor="{StaticResource PrimaryDarkBlue}"
-          HeightRequest="50"
-          Padding="16,10"
-          ColumnDefinitions="Auto,*,Auto">
-
+              BackgroundColor="{StaticResource PrimaryDarkBlue}"
+              HeightRequest="50"
+              Padding="16,10"
+              ColumnDefinitions="Auto,*,Auto">
             <ImageButton
-            Grid.Column="0"
-            Source="menu.png"
-            WidthRequest="24"
-            HeightRequest="24"
-            Aspect="AspectFit"
-            Clicked="OnOpenMenuClicked"/>
-
+                Grid.Column="0"
+                Source="menu.png"
+                WidthRequest="24"
+                HeightRequest="24"
+                Aspect="AspectFit"
+                Clicked="OnOpenMenuClicked"/>
         </Grid>
 
         <ScrollView Grid.Row="1">
-
             <VerticalStackLayout Padding="16" Spacing="18">
 
+                <!-- DatePicker -->
                 <Border Stroke="{StaticResource PrimaryDarkBlue}"
-                StrokeShape="RoundRectangle 12"
-                StrokeThickness="1"
-                WidthRequest="160"
-                HeightRequest="40"
-                VerticalOptions="Center"
-                HorizontalOptions="Start"
-                Padding="10,0">
-
-                    <Grid
-                    ColumnDefinitions="Auto, *"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center">
-
-                        <Image
-                        Source="calendar.png"
-                        Background="Transparent"
-                        WidthRequest="22"
-                        HeightRequest="22"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Start"
-                        Aspect="AspectFit"/>
-
-                        <Grid
-                        Grid.Column="1"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Start"
+                        StrokeShape="RoundRectangle 12"
+                        StrokeThickness="1"
+                        WidthRequest="160"
                         HeightRequest="40"
-                        Padding="2">
-
+                        VerticalOptions="Center"
+                        HorizontalOptions="Start"
+                        Padding="10,0">
+                    <Grid ColumnDefinitions="Auto,*" VerticalOptions="Center" HorizontalOptions="Center">
+                        <Image Source="calendar.png"
+                               WidthRequest="22" HeightRequest="22"
+                               VerticalOptions="Center" Aspect="AspectFit"/>
+                        <Grid Grid.Column="1" VerticalOptions="Center" HeightRequest="40" Padding="2">
                             <DatePicker
-                            x:Name="MainDatePicker"
-                            Format="dd/MM/yyyy"
-                            TextColor="{StaticResource PrimaryDarkBlue}"
-                            BackgroundColor="Transparent"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Start"
-                            Margin="5,0,0,0"
-                            DateSelected="OnDateSelected" />
-
+                                x:Name="MainDatePicker"
+                                Format="dd/MM/yyyy"
+                                TextColor="{StaticResource PrimaryDarkBlue}"
+                                BackgroundColor="Transparent"
+                                VerticalOptions="Center"
+                                Margin="5,0,0,0"
+                                DateSelected="OnDateSelected"/>
                         </Grid>
                     </Grid>
                 </Border>
 
+                <!-- Indicador de carga -->
+                <ActivityIndicator
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}"
+                    Color="{StaticResource PrimaryDarkBlue}"
+                    HorizontalOptions="Center"/>
+
+                <!-- SECCIÓN: Hoy -->
                 <StackLayout>
                     <Grid>
                         <Label Text="Hoy"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource PrimaryDarkBlue}"
-                           VerticalOptions="Center"/>
-
-                        <Image
-                        x:Name="TodayArrow"
-                        Source="expand.png"
-                        WidthRequest="20"
-                        HeightRequest="20"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center">
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{StaticResource PrimaryDarkBlue}"
+                               VerticalOptions="Center"/>
+                        <Image x:Name="TodayArrow" Source="expand.png"
+                               WidthRequest="20" HeightRequest="20"
+                               HorizontalOptions="End" VerticalOptions="Center">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnTodayArrowTapped"/>
                             </Image.GestureRecognizers>
                         </Image>
                     </Grid>
-
-                    <Border
-                    x:Name="TodayContent"
-                    Stroke="{StaticResource PrimaryDarkBlue}"
-                    StrokeThickness="1"
-                    BackgroundColor="Transparent"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="12"
-                    Margin="0,8">
-                        <Label
-                        Text="No hay notificaciones que mostrar"
-                        HorizontalOptions="Center"
-                        TextColor="{StaticResource MediumGray}" />
+                    <Border x:Name="TodayContent"
+                            Stroke="{StaticResource PrimaryDarkBlue}"
+                            StrokeThickness="1"
+                            BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="12" Margin="0,8">
+                        <VerticalStackLayout Spacing="4"
+                                             BindableLayout.ItemsSource="{Binding TodayInvoices}">
+                            <!-- EmptyView -->
+                            <Label Text="No hay notificaciones que mostrar"
+                                   HorizontalOptions="Center"
+                                   TextColor="{StaticResource MediumGray}"
+                                   IsVisible="{Binding HasNoTodayInvoices}"/>
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="model:InvoiceResponse">
+                                    <Border StrokeThickness="0.5"
+                                            Stroke="{StaticResource PrimaryDarkBlue}"
+                                            StrokeShape="RoundRectangle 8"
+                                            Padding="10,8" Margin="0,4">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="{Binding Consecutive, StringFormat='Factura #{0}'}"
+                                                       FontAttributes="Bold" FontSize="13"
+                                                       TextColor="{StaticResource PrimaryDarkBlue}"/>
+                                                <Label Text="{Binding Charged_company.Company_name}"
+                                                       FontSize="12" TextColor="{StaticResource MediumGray}"/>
+                                                <Label Text="{Binding Expiry_date, StringFormat='Vence: {0:dd/MM/yyyy}'}"
+                                                       FontSize="12" TextColor="#E53935"/>
+                                            </VerticalStackLayout>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
+                                                <Label Text="{Binding Total_voucher, StringFormat='{0:C2}'}"
+                                                       FontAttributes="Bold" FontSize="13"
+                                                       TextColor="{StaticResource PrimaryDarkBlue}"
+                                                       HorizontalOptions="End"/>
+                                                <Label Text="{Binding Status}"
+                                                       FontSize="11" TextColor="{StaticResource MediumGray}"
+                                                       HorizontalOptions="End"/>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
                     </Border>
                 </StackLayout>
 
+                <!-- SECCIÓN: Hace una semana -->
                 <StackLayout>
                     <Grid>
                         <Label Text="Hace una semana"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource PrimaryDarkBlue}"
-                           VerticalOptions="Center"/>
-
-                        <Image
-                        x:Name="WeekArrow"
-                        Source="expand.png"
-                        WidthRequest="20"
-                        HeightRequest="20"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center">
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{StaticResource PrimaryDarkBlue}"
+                               VerticalOptions="Center"/>
+                        <Image x:Name="WeekArrow" Source="expand.png"
+                               WidthRequest="20" HeightRequest="20"
+                               HorizontalOptions="End" VerticalOptions="Center">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnWeekArrowTapped"/>
                             </Image.GestureRecognizers>
                         </Image>
                     </Grid>
-
-                    <Border
-                    x:Name="WeekContent"
-                    Stroke="{StaticResource PrimaryDarkBlue}"
-                    StrokeThickness="1"
-                    BackgroundColor="Transparent"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="12"
-                    Margin="0,8">
-                        <Label
-                        Text="No hay notificaciones que mostrar"
-                        HorizontalOptions="Center"
-                        TextColor="{StaticResource MediumGray}" />
+                    <Border x:Name="WeekContent"
+                            Stroke="{StaticResource PrimaryDarkBlue}"
+                            StrokeThickness="1"
+                            BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="12" Margin="0,8">
+                        <VerticalStackLayout Spacing="4"
+                                             BindableLayout.ItemsSource="{Binding WeekInvoices}">
+                            <!-- EmptyView -->
+                            <Label Text="No hay notificaciones que mostrar"
+                                   HorizontalOptions="Center"
+                                   TextColor="{StaticResource MediumGray}"
+                                   IsVisible="{Binding HasNoWeekInvoices}"/>
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="model:InvoiceResponse">
+                                    <Border StrokeThickness="0.5"
+                                            Stroke="{StaticResource PrimaryDarkBlue}"
+                                            StrokeShape="RoundRectangle 8"
+                                            Padding="10,8" Margin="0,4">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="{Binding Consecutive, StringFormat='Factura #{0}'}"
+                                                       FontAttributes="Bold" FontSize="13"
+                                                       TextColor="{StaticResource PrimaryDarkBlue}"/>
+                                                <Label Text="{Binding Charged_company.Company_name}"
+                                                       FontSize="12" TextColor="{StaticResource MediumGray}"/>
+                                                <Label Text="{Binding Expiry_date, StringFormat='Vence: {0:dd/MM/yyyy}'}"
+                                                       FontSize="12" TextColor="#E53935"/>
+                                            </VerticalStackLayout>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
+                                                <Label Text="{Binding Total_voucher, StringFormat='{0:C2}'}"
+                                                       FontAttributes="Bold" FontSize="13"
+                                                       TextColor="{StaticResource PrimaryDarkBlue}"
+                                                       HorizontalOptions="End"/>
+                                                <Label Text="{Binding Status}"
+                                                       FontSize="11" TextColor="{StaticResource MediumGray}"
+                                                       HorizontalOptions="End"/>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
                     </Border>
-
                 </StackLayout>
 
+                <!-- SECCIÓN: Hace un mes -->
                 <StackLayout>
                     <Grid>
                         <Label Text="Hace un mes"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           TextColor="{StaticResource PrimaryDarkBlue}"
-                           VerticalOptions="Center"/>
-
-                        <Image
-                        x:Name="MonthArrow"
-                        Source="expand.png"
-                        WidthRequest="20"
-                        HeightRequest="20"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center">
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{StaticResource PrimaryDarkBlue}"
+                               VerticalOptions="Center"/>
+                        <Image x:Name="MonthArrow" Source="expand.png"
+                               WidthRequest="20" HeightRequest="20"
+                               HorizontalOptions="End" VerticalOptions="Center">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnMonthArrowTapped"/>
                             </Image.GestureRecognizers>
                         </Image>
                     </Grid>
-
-
-                    <Border
-                    x:Name="MonthContent"
-                    Stroke="{StaticResource PrimaryDarkBlue}"
-                    StrokeThickness="1"
-                    BackgroundColor="Transparent"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="12"
-                    Margin="0,8">
-                        <Label
-                        Text="No hay notificaciones que mostrar"
-                        HorizontalOptions="Center"
-                        TextColor="{StaticResource MediumGray}" />
+                    <Border x:Name="MonthContent"
+                            Stroke="{StaticResource PrimaryDarkBlue}"
+                            StrokeThickness="1"
+                            BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="12" Margin="0,8">
+                        <VerticalStackLayout Spacing="4"
+                                             BindableLayout.ItemsSource="{Binding MonthInvoices}">
+                            <!-- EmptyView -->
+                            <Label Text="No hay notificaciones que mostrar"
+                                   HorizontalOptions="Center"
+                                   TextColor="{StaticResource MediumGray}"
+                                   IsVisible="{Binding HasNoMonthInvoices}"/>
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="model:InvoiceResponse">
+                                    <Border StrokeThickness="0.5"
+                                            Stroke="{StaticResource PrimaryDarkBlue}"
+                                            StrokeShape="RoundRectangle 8"
+                                            Padding="10,8" Margin="0,4">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="{Binding Consecutive, StringFormat='Factura #{0}'}"
+                                                       FontAttributes="Bold" FontSize="13"
+                                                       TextColor="{StaticResource PrimaryDarkBlue}"/>
+                                                <Label Text="{Binding Charged_company.Company_name}"
+                                                       FontSize="12" TextColor="{StaticResource MediumGray}"/>
+                                                <Label Text="{Binding Expiry_date, StringFormat='Vence: {0:dd/MM/yyyy}'}"
+                                                       FontSize="12" TextColor="#E53935"/>
+                                            </VerticalStackLayout>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
+                                                <Label Text="{Binding Total_voucher, StringFormat='{0:C2}'}"
+                                                       FontAttributes="Bold" FontSize="13"
+                                                       TextColor="{StaticResource PrimaryDarkBlue}"
+                                                       HorizontalOptions="End"/>
+                                                <Label Text="{Binding Status}"
+                                                       FontSize="11" TextColor="{StaticResource MediumGray}"
+                                                       HorizontalOptions="End"/>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
                     </Border>
-
-
                 </StackLayout>
 
             </VerticalStackLayout>
-
         </ScrollView>
 
     </Grid>
-
 </ContentPage>
