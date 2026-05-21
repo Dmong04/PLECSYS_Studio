@@ -14,19 +14,13 @@ namespace PLECSYS_Studio.Data.History
     {
         private readonly HttpClient _http = factory.CreateClient("PLECSYS");
 
-        public async Task<APIResponse<InvoiceHistoryResponse>> GetInvoicesHistorybyId(int historyId)
+        public async Task<APIResponse<List<InvoiceHistoryResponse>>> GetInvoiceHistoryByUserAndCompanyId(FindHistoryRequest request)
         {
-            var response = await _http.GetAsync($"invoice/history/{historyId}");
-            var raw = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<APIResponse<InvoiceHistoryResponse>>(raw,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var response = await _http.PostAsJsonAsync("invoice/history/all", request);
+            response.EnsureSuccessStatusCode();
 
-            if (result is null)
-            {
-                throw new Exception("Respuesta inválida del backend");
-            }
-
-            return result;
+            var success = await response.Content.ReadFromJsonAsync<APIResponse<List<InvoiceHistoryResponse>>>();
+            return success;
         }
     }
 }

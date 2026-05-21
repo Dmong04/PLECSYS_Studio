@@ -5,6 +5,6 @@ namespace PLECSYS_Studio.Services.History
 {
     public interface IInvoiceHistoryService
     {
-        Task<APIResponse<InvoiceHistoryResponse>> GetInvoicesHistorybyId(int historyId);
+        Task<APIResponse<List<InvoiceHistoryResponse>>> GetInvoicesHistorybyUseraAndCompanyId(FindHistoryRequest request);
     }
 }

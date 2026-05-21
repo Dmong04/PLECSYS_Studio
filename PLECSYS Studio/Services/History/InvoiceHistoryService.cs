@@ -13,14 +13,14 @@ namespace PLECSYS_Studio.Services.History
             _data = data;
         }
 
-        public async Task<APIResponse<InvoiceHistoryResponse>> GetInvoicesHistorybyId(int historyId)
+        public async Task<APIResponse<List<InvoiceHistoryResponse>>> GetInvoicesHistorybyUseraAndCompanyId(FindHistoryRequest request)
         {
             try
             {
-                var response = await _data.GetInvoicesHistorybyId(historyId);
+                var response = await _data.GetInvoiceHistoryByUserAndCompanyId(request);
                 if (response.Data is null)
                 {
-                    return new APIResponse<InvoiceHistoryResponse>()
+                    return new APIResponse<List<InvoiceHistoryResponse>>()
                     {
                         Data = null,
                         Success = false,
@@ -32,7 +32,7 @@ namespace PLECSYS_Studio.Services.History
             }
             catch (Exception ex)
             {
-                return new APIResponse<InvoiceHistoryResponse>()
+                return new APIResponse<List<InvoiceHistoryResponse>>()
                 {
                     Data = null,
                     Success = false,
