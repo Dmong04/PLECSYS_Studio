@@ -2,13 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:PLECSYS_Studio.ViewModels.History"
+             xmlns:model="clr-namespace:PLECSYS_Studio.Wrappers.History"
              x:Class="PLECSYS_Studio.Views.History.InvoiceHistoryPage"
+             x:DataType="vm:InvoiceHistoryViewModel"
              BackgroundColor="{StaticResource PageBackground}"
              Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto">
+    <Grid RowDefinitions="Auto,Auto,*">
 
-        <!-- 🔹 Encabezado -->
+        <!-- Encabezado -->
         <Grid Grid.Row="0"
               BackgroundColor="{StaticResource PrimaryDarkBlue}"
               HeightRequest="50"
@@ -18,139 +20,150 @@
                          WidthRequest="24"
                          HeightRequest="24"
                          BackgroundColor="Transparent"
-                         Command="{Binding GoBackCommand}" />
+                         Command="{Binding GoBackCommand}"/>
         </Grid>
 
-        <!-- 🔹 Título -->
-        <VerticalStackLayout Grid.Row="1"
-                             Padding="24,12,24,6"
-                             Spacing="4">
-            <Label Text="Histórico"
+        <!-- Título -->
+        <VerticalStackLayout Grid.Row="1" Padding="16,12" Spacing="8">
+            <Label Text="Histórico de Facturas"
                    FontSize="18"
                    FontAttributes="Bold"
                    TextColor="{StaticResource PrimaryDarkBlue}"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center"/>
+            <Label Text="Historial de eventos por compañía"
+                   FontSize="13"
+                   TextColor="{StaticResource MediumGray}"
+                   HorizontalOptions="Center"/>
             <BoxView HeightRequest="1"
                      BackgroundColor="{StaticResource MediumGray}"
-                     HorizontalOptions="Fill" />
+                     HorizontalOptions="Fill"/>
+
+            <!-- Indicador de carga -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource PrimaryDarkBlue}"
+                               HorizontalOptions="Center"/>
+
+            <!-- Mensaje de error/vacío -->
+            <Label Text="{Binding StatusMessage}"
+                   IsVisible="{Binding HasNoItems}"
+                   FontSize="13"
+                   TextColor="{StaticResource MediumGray}"
+                   HorizontalOptions="Center"/>
         </VerticalStackLayout>
 
-        <!-- 🔹 Contenido -->
-        <VerticalStackLayout Grid.Row="2"
-                             Padding="24,20"
-                             Spacing="12"
-                             HorizontalOptions="Fill"
-                             VerticalOptions="Fill">
+        <!-- Lista -->
+        <RefreshView Grid.Row="2"
+                     Command="{Binding LoadCommand}"
+                     IsRefreshing="{Binding IsBusy}">
+            <CollectionView ItemsSource="{Binding Items}"
+                            SelectionMode="None"
+                            Margin="16,0,16,16">
 
-            <Label Text="{Binding InvoiceConsecutive, StringFormat='Factura asociada: #{0}'}"
-                   FontAttributes="Bold"
-                   FontSize="15"
-                   TextColor="{StaticResource PrimaryDarkBlue}"
-                   HorizontalOptions="Start" />
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Padding="40,60"
+                                         Spacing="10">
+                        <Image Source="empty.png"
+                               WidthRequest="90"
+                               HeightRequest="90"
+                               Aspect="AspectFit"/>
+                        <Label Text="Sin eventos que mostrar..."
+                               FontAttributes="Italic"
+                               FontSize="14"
+                               TextColor="{StaticResource MediumGray}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
 
-            <!-- 🔸 Filtros centrados -->
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
-                <Border Stroke="{StaticResource MediumGray}"
-                        StrokeThickness="1"
-                        BackgroundColor="Transparent"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="6,0"
-                        HeightRequest="40"
-                        WidthRequest="120">
-                    <Picker ItemsSource="{Binding ActionsFilter}"
-                            SelectedItem="{Binding SelectedAction}"
-                            Title="Evento"
-                            FontSize="12"
-                            HorizontalOptions="Fill"
-                            BackgroundColor="Transparent"
-                            TextColor="{StaticResource PrimaryDarkBlue}" />
-                </Border>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:InvoiceHistoryResponse">
+                        <Border Stroke="{StaticResource PrimaryDarkBlue}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                BackgroundColor="White"
+                                Padding="14,12"
+                                Margin="16,6">
+                            <VerticalStackLayout Spacing="8">
 
-                <HorizontalStackLayout VerticalOptions="Center">
-                    <Label Text="Ordenar por fecha reciente"
-                           FontSize="12"
-                           TextColor="{StaticResource PrimaryDarkBlue}"
-                           VerticalOptions="Center" />
-                    <Switch IsToggled="{Binding SortDescending}"
-                            VerticalOptions="Center" />
-                </HorizontalStackLayout>
-            </HorizontalStackLayout>
-
-            <!-- 🔸 Historial con EmptyView visible -->
-            <RefreshView Command="{Binding LoadCommand}"
-                         IsRefreshing="{Binding IsBusy}"
-                         HorizontalOptions="Fill"
-                         VerticalOptions="Fill">
-                <CollectionView ItemsSource="{Binding Items}"
-                                HorizontalOptions="Fill"
-                                VerticalOptions="Fill">
-                    <CollectionView.EmptyView>
-                        <VerticalStackLayout HorizontalOptions="Center"
-                                             VerticalOptions="Center"
-                                             Padding="40,60"
-                                             Spacing="10">
-                            <Image Source="empty.png"
-                                   WidthRequest="90"
-                                   HeightRequest="90"
-                                   Aspect="AspectFit" />
-                            <Label Text="Sin eventos que mostrar..."
-                                   FontAttributes="Italic"
-                                   FontSize="14"
-                                   TextColor="{StaticResource MediumGray}"
-                                   HorizontalOptions="Center" />
-                        </VerticalStackLayout>
-                    </CollectionView.EmptyView>
-
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Stroke="{StaticResource LightGray}"
-                                    StrokeThickness="1"
-                                    Padding="14"
-                                    Margin="10,6"
-                                    StrokeShape="RoundRectangle 16"
-                                    BackgroundColor="Transparent">
-                                <VerticalStackLayout Spacing="4">
-                                    <Label Text="{Binding Action, StringFormat='Acción: {0}'}"
+                                <!-- Acción + Fecha -->
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="{Binding Action}"
                                            FontAttributes="Bold"
-                                           TextColor="{StaticResource PrimaryDarkBlue}" />
-                                    <Label Text="{Binding RecordDate, StringFormat='Fecha: {0:dd/MM/yyyy}'}"
-                                           TextColor="{StaticResource PrimaryDarkBlue}" />
-                                </VerticalStackLayout>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </RefreshView>
-        </VerticalStackLayout>
+                                           FontSize="14"
+                                           TextColor="{StaticResource PrimaryDarkBlue}"
+                                           VerticalOptions="Center"/>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Record_date, StringFormat='{0:dd/MM/yyyy}'}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource MediumGray}"
+                                           VerticalOptions="Center"/>
+                                </Grid>
 
-        <!-- 🔹 Botón centrado -->
-        <VerticalStackLayout Grid.Row="3"
-                             Padding="0,20"
-                             HorizontalOptions="Center"
-                             VerticalOptions="End">
-            <Border StrokeThickness="0"
-                    BackgroundColor="{StaticResource PrimaryDarkBlue}"
-                    StrokeShape="RoundRectangle 25"
-                    HeightRequest="45"
-                    WidthRequest="175"
-                    Padding="10"
-                    HorizontalOptions="Center">
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ExportCsvCommand}" />
-                </Border.GestureRecognizers>
+                                <BoxView HeightRequest="0.5"
+                                         BackgroundColor="{StaticResource MediumGray}"
+                                         HorizontalOptions="Fill"/>
 
-                <HorizontalStackLayout Spacing="8"
-                                        HorizontalOptions="Center">
-                    <Image Source="excel.png"
-                           WidthRequest="20"
-                           HeightRequest="20"
-                           Aspect="AspectFit" />
-                    <Label Text="Exportar CSV"
-                           TextColor="White"
-                           FontAttributes="Bold" />
-                </HorizontalStackLayout>
-            </Border>
-        </VerticalStackLayout>
+                                <!-- Transición de estado -->
+                                <HorizontalStackLayout Spacing="8">
+                                    <Border BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 6"
+                                            Padding="8,3">
+                                        <Label Text="{Binding Previous_status}"
+                                               FontSize="11"
+                                               TextColor="White"/>
+                                    </Border>
+                                    <Label Text="→"
+                                           FontSize="14"
+                                           TextColor="{StaticResource MediumGray}"
+                                           VerticalOptions="Center"/>
+                                    <Border BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 6"
+                                            Padding="8,3">
+                                        <Label Text="{Binding New_status}"
+                                               FontSize="11"
+                                               TextColor="White"/>
+                                    </Border>
+                                </HorizontalStackLayout>
+
+                                <!-- Montos -->
+                                <Grid ColumnDefinitions="*,*">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="Monto pagado"
+                                               FontSize="11"
+                                               TextColor="{StaticResource MediumGray}"/>
+                                        <Label Text="{Binding Paid_amount, StringFormat='{0:C2}'}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource PrimaryDarkBlue}"/>
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                        <Label Text="Saldo pendiente"
+                                               FontSize="11"
+                                               TextColor="{StaticResource MediumGray}"/>
+                                        <Label Text="{Binding Pending_balance, StringFormat='{0:C2}'}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource PrimaryDarkBlue}"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <!-- Descripción -->
+                                <Label Text="{Binding Description}"
+                                       FontSize="12"
+                                       TextColor="{StaticResource MediumGray}"
+                                       LineBreakMode="WordWrap"/>
+
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+        </RefreshView>
 
     </Grid>
 </ContentPage>

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using PLECSYS_Studio.Data.Companies;
 using PLECSYS_Studio.Data.GPS;
+using PLECSYS_Studio.Data.History;
 using PLECSYS_Studio.Data.Invoices;
 using PLECSYS_Studio.Data.Products;
 using PLECSYS_Studio.Data.SaleOrderDetails;
@@ -11,6 +12,7 @@ using PLECSYS_Studio.Handlers;
 using PLECSYS_Studio.Handlers.GPS;
 using PLECSYS_Studio.Services;
 using PLECSYS_Studio.Services.GPS;
+using PLECSYS_Studio.Services.History;
 using PLECSYS_Studio.Services.Invoices;
 using PLECSYS_Studio.Services.Products;
 using PLECSYS_Studio.Services.SaleOrderDetails;
@@ -18,11 +20,13 @@ using PLECSYS_Studio.Services.SaleOrders;
 using PLECSYS_Studio.Services.Users;
 using PLECSYS_Studio.ViewModels;
 using PLECSYS_Studio.ViewModels.GPS;
+using PLECSYS_Studio.ViewModels.History;
 using PLECSYS_Studio.ViewModels.Invoices;
 using PLECSYS_Studio.ViewModels.Invoices.Filters;
 using PLECSYS_Studio.ViewModels.SaleOrders;
 using PLECSYS_Studio.ViewModels.SaleOrders.Options;
 using PLECSYS_Studio.ViewModels.SmartFlow;
+using PLECSYS_Studio.Views.History;
 using PLECSYS_Studio.Views.SmartFlow;
 
 namespace PLECSYS_Studio
@@ -77,6 +81,7 @@ namespace PLECSYS_Studio
             builder.Services.AddSingleton<SaleOrderDetailData>();
             builder.Services.AddScoped<LocationData>();
             builder.Services.AddTransient<TrackingConfigHandler>();
+            builder.Services.AddScoped<InvoiceHistoryData>();
             // Handlers de datos
 
             // handlers
@@ -93,6 +98,7 @@ namespace PLECSYS_Studio
             builder.Services.AddSingleton<ITrackingConfigService, TrackingConfigService>();
             builder.Services.AddSingleton<LocationTrackingService>();
             builder.Services.AddSingleton<SessionService>();
+            builder.Services.AddScoped<IInvoiceHistoryService, InvoiceHistoryService>();
             // Servicios
 
             // ViewModels
@@ -113,6 +119,8 @@ namespace PLECSYS_Studio
             builder.Services.AddTransient<CompanySelectionViewModel>();
             builder.Services.AddTransient<SmartFlowPage>();
             builder.Services.AddTransient<SmartFlowViewModel>();
+            builder.Services.AddScoped<InvoiceHistoryViewModel>();
+            builder.Services.AddScoped<InvoiceHistoryPage>();
             // ViewModels
 
             // Shells
