@@ -9,6 +9,7 @@ using PLECSYS_Studio.Wrappers.Invoices;
 using PLECSYS_Studio.Services.InvoiceService;
 using PLECSYS_Studio.Data.Invoices;
 using System.Collections.ObjectModel;
+using PLECSYS_Studio.Services;
 
 namespace PLECSYS_Studio.ViewModels.Invoices
 {
@@ -17,6 +18,7 @@ namespace PLECSYS_Studio.ViewModels.Invoices
         private readonly IInvoiceService _service;
         private readonly IInvoicePdfService _pdfService;
         private readonly InvoiceData _invoiceData;
+        private readonly SessionService _session;
 
         [ObservableProperty]
         private bool isBusy;
@@ -28,16 +30,13 @@ namespace PLECSYS_Studio.ViewModels.Invoices
         public CurrencyFilterViewModel CurrencyFilter { get; }
         public DateFilterViewModel DateFilter { get; }
 
-        // Lista base de InvoiceResponse (usada por los filtros)
-        public ObservableCollection<InvoiceResponse> Invoices { get; } = [];
-
-        // Mapa Consecutive → SingleInvoiceViewModel (para el popup)
-        private readonly Dictionary<int, SingleInvoiceViewModel> _invoiceViewModels = [];
+        public ObservableCollection<SingleInvoiceViewModel> Invoices { get; } = [];
 
         public InvoicesViewModel(
             IInvoiceService service,
             IInvoicePdfService pdfService,
             InvoiceData invoiceData,
+            SessionService session,
             ClientFilterViewModel clientFilter,
             CurrencyFilterViewModel currencyFilter,
             DateFilterViewModel dateFilter)
@@ -45,26 +44,24 @@ namespace PLECSYS_Studio.ViewModels.Invoices
             _service = service;
             _pdfService = pdfService;
             _invoiceData = invoiceData;
+            _session = session;
 
             ClientFilter = clientFilter;
             CurrencyFilter = currencyFilter;
             DateFilter = dateFilter;
 
-            ClientFilter.InvoicesReference = Invoices;
-            CurrencyFilter.InvoicesReference = Invoices;
-            DateFilter.InvoicesReference = Invoices;
-
-            // Escuchar mensajes para reflejar cambios en InvoiceResponse (filtros)
             WeakReferenceMessenger.Default.Register<PaymentRegisteredMessage>(this, (_, msg) =>
             {
                 var invoice = Invoices.FirstOrDefault(i => i.Consecutive == msg.InvoiceConsecutive);
                 if (invoice is null) return;
+                // SingleInvoiceViewModel ya maneja esto internamente via su propio Register
             });
 
             WeakReferenceMessenger.Default.Register<ClaimRegisteredMessage>(this, (_, msg) =>
             {
                 var invoice = Invoices.FirstOrDefault(i => i.Consecutive == msg.InvoiceConsecutive);
                 if (invoice is null) return;
+                // SingleInvoiceViewModel ya maneja esto internamente via su propio Register
             });
         }
 
@@ -77,27 +74,23 @@ namespace PLECSYS_Studio.ViewModels.Invoices
 
             try
             {
-                var response = await _service.LoadInvoices();
+                var response = await _service.LoadInvoices(_session.GetEmail(), _session.GetCompanyId());
                 Invoices.Clear();
-                _invoiceViewModels.Clear();
 
                 if (response.Data is not null)
                 {
                     foreach (var invoice in response.Data)
                     {
-                        Invoices.Add(invoice);
-
-                        // Crear SingleInvoiceViewModel por cada factura
                         var vm = new SingleInvoiceViewModel(_pdfService, _invoiceData)
                         {
                             Consecutive = invoice.Consecutive,
                             Total_voucher = invoice.Total_voucher,
-                            User_creator_id = invoice.User.Email ?? string.Empty,
-                            Sell_company = invoice.Sell_company.Company_name ?? string.Empty,
-                            Charged_company = invoice.Charged_company.Company_name ?? string.Empty,
+                            User_creator_id = invoice.User?.Email ?? string.Empty,
+                            Sell_company = invoice.Sell_company?.Company_name ?? string.Empty,
+                            Charged_company = invoice.Charged_company?.Company_name ?? string.Empty,
                         };
 
-                        _invoiceViewModels[invoice.Consecutive] = vm;
+                        Invoices.Add(vm);
                     }
 
                     // Poblar filtros
@@ -142,11 +135,5 @@ namespace PLECSYS_Studio.ViewModels.Invoices
                 IsBusy = false;
             }
         }
-
-        /// <summary>
-        /// Llamar desde la UI al tocar una fila para abrir el popup.
-        /// </summary>
-        public SingleInvoiceViewModel? GetInvoiceViewModel(int consecutive)
-            => _invoiceViewModels.GetValueOrDefault(consecutive);
     }
 }

@@ -10,7 +10,7 @@ namespace PLECSYS_Studio.Services.Invoices
 {
     public interface IInvoiceService
     {
-        Task<APIResponse<List<InvoiceResponse>>> LoadInvoices();
+        Task<APIResponse<List<InvoiceResponse>>> LoadInvoices(string email, int companyId);
 
         Task<APIResponse<List<InvoiceResponse>>> GetInvoicesByClient(string email);
 
@@ -20,6 +20,6 @@ namespace PLECSYS_Studio.Services.Invoices
 
         Task<APIResponse<InvoiceResponse>> CreateInvoice(InvoiceRequest request);
 
-        Task<APIResponse<List<InvoiceResponse>>> GetInvoicesByExpiryDate(DateTime expiryDate); // 👈
+        Task<APIResponse<List<InvoiceResponse>>> GetInvoicesByExpiryDate(DateTime expiryDate);
     }
 }

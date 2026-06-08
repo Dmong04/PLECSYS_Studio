@@ -86,7 +86,7 @@ namespace PLECSYS_Studio.Handlers
                 await Shell.Current.DisplayAlert($"Bienvenido, {login.Data?.email}",
                     "Inicio de sesión exitoso", "Aceptar");
                 SessionManager.SwitchtoAppShell(_shellViewModel);
-                await _trackingService.StartTracking();
+                // await _trackingService.StartTracking();
             }
             catch (Exception ex)
             {

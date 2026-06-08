@@ -13,15 +13,18 @@ namespace PLECSYS_Studio.Data.Invoices
     {
         private readonly HttpClient _http = factory.CreateClient("PLECSYS");
 
-        public async Task<APIResponse<List<InvoiceResponse>>> LoadInvoices()
+        public async Task<APIResponse<List<InvoiceResponse>>> LoadInvoices(string email, int companyId)
         {
-            var response = await _http.GetFromJsonAsync<APIResponse<List<Invoice>>>("invoice/all");
+            var requestBody = new { Email = email, CompanyId = companyId };
+
+            var response = await _http.PostAsJsonAsync("invoice/all", requestBody);
+            var result = await response.Content.ReadFromJsonAsync<APIResponse<List<Invoice>>>();
 
             return new APIResponse<List<InvoiceResponse>>()
             {
-                Data = MapInvoices(response?.Data),
-                Success = response?.Success ?? false,
-                Message = response?.Message ?? "Error al cargar facturas"
+                Data = MapInvoices(result?.Data),
+                Success = result?.Success ?? false,
+                Message = result?.Message ?? "Error al cargar facturas"
             };
         }
 
