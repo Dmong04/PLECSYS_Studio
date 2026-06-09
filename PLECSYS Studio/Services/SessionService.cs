@@ -1,4 +1,5 @@
-﻿using PLECSYS_Studio.Wrappers.Users;
+﻿using MongoDB.Driver.Linq;
+using PLECSYS_Studio.Wrappers.Users;
 using System.Text.Json;
 
 namespace PLECSYS_Studio.Services
@@ -10,6 +11,7 @@ namespace PLECSYS_Studio.Services
         private const string CompanyIdKey = "selected_company_id";
         private const string CompanyNameKey = "selected_company_name";
         private const string LinkedProcessesKey = "linked_processes";
+        private const string TokenExpiryKey = "token_expiry";
 
         public void SaveSession(LoginResponse login, int companyId, string companyName)
         {
@@ -17,6 +19,10 @@ namespace PLECSYS_Studio.Services
             Preferences.Set(EmailKey, login.email ?? string.Empty);
             Preferences.Set(CompanyIdKey, companyId);
             Preferences.Set(CompanyNameKey, companyName);
+
+            // ← Calcula y guarda la expiración exacta
+            var expiry = DateTime.UtcNow.AddSeconds(login.expires_in);
+            Preferences.Set(TokenExpiryKey, expiry.ToString("O"));
 
             var processes = JsonSerializer.Serialize(login.linked_processes ?? new List<SmartFlowOption>());
             Preferences.Set(LinkedProcessesKey, processes);
@@ -42,6 +48,20 @@ namespace PLECSYS_Studio.Services
 
         public bool HasCompany() => Preferences.ContainsKey(CompanyIdKey);
 
+        // ← nuevo
+        public bool HasValidSession()
+        {
+            var token = GetAccessToken();
+            var expiryRaw = Preferences.Get(TokenExpiryKey, string.Empty);
+
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(expiryRaw))
+                return false;
+
+            return DateTime.TryParse(expiryRaw, null,
+                       System.Globalization.DateTimeStyles.RoundtripKind, out var expiry)
+                   && DateTime.UtcNow < expiry;
+        }
+
         public void Clear()
         {
             Preferences.Remove(AccessTokenKey);
@@ -49,6 +69,7 @@ namespace PLECSYS_Studio.Services
             Preferences.Remove(CompanyIdKey);
             Preferences.Remove(CompanyNameKey);
             Preferences.Remove(LinkedProcessesKey);
+            Preferences.Remove(TokenExpiryKey); // ← nuevo
         }
     }
 }

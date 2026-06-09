@@ -134,6 +134,12 @@ namespace PLECSYS_Studio
             builder.Logging.AddDebug();
 #endif
 
+            // Rutas
+            Routing.RegisterRoute(nameof(Views.Payments.RegisterPaymentPage), typeof(Views.Payments.RegisterPaymentPage));
+            Routing.RegisterRoute(nameof(Views.Claims.RegisterClaimPage), typeof(Views.Claims.RegisterClaimPage));
+            Routing.RegisterRoute(nameof(Views.History.InvoiceHistoryPage), typeof(Views.History.InvoiceHistoryPage));
+            // Rutas
+
             return builder.Build();
         }
     }

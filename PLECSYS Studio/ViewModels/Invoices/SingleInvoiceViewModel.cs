@@ -20,6 +20,7 @@ namespace PLECSYS_Studio.ViewModels
         private readonly InvoiceData _data;
 
         public int Consecutive { get; set; }
+        public int Invoice_id { get; set; }
         public decimal Total_voucher { get; set; }
         public string User_creator_id { get; set; } = string.Empty;
         public string Sell_company { get; set; } = string.Empty;
@@ -144,12 +145,11 @@ namespace PLECSYS_Studio.ViewModels
         public async Task DownloadPdfAsync()
         {
             bool confirm = await Shell.Current.DisplayAlert(
-                "Descargar PDF", 
+                "Descargar PDF",
                 $"¿Desea descargar la factura #{Consecutive} en PDF?",
                 "Si", "Cancelar");
 
-            if(!confirm)
-                return;
+            if (!confirm) return;
 
             await ExecuteDownloadPdfAsync();
         }
@@ -162,7 +162,7 @@ namespace PLECSYS_Studio.ViewModels
                 DownloadProgress = 0;
                 var progress = new Progress<double>(p => DownloadProgress = p);
 
-                string path = await _pdfService.DownloadInvoicePdfAsync(Consecutive, progress);
+                string path = await _pdfService.DownloadInvoicePdfAsync(Invoice_id, progress); // ← Invoice_id
 
                 IsDownloading = false;
                 await Shell.Current.DisplayAlert("Descarga completa",
@@ -177,18 +177,16 @@ namespace PLECSYS_Studio.ViewModels
 
                 bool regen = await Shell.Current.DisplayAlert(
                     "PDF no disponible",
-                    "No se encontro el PDF. ¿Desea volver a intentarlo?",
-                    "Si", "Cancelar"
-                );
+                    "No se encontró el PDF. ¿Desea volver a intentarlo?",
+                    "Si", "Cancelar");
 
                 if (!regen) return;
                 await RegenerateAndRetryAsync();
             }
             catch (Exception ex)
-            { 
+            {
                 IsDownloading = false;
-                await Shell.Current.DisplayAlert(
-                    "Error",
+                await Shell.Current.DisplayAlert("Error",
                     $"Ocurrió un error al descargar el PDF:\n{ex.Message}",
                     "Aceptar");
             }
@@ -196,41 +194,36 @@ namespace PLECSYS_Studio.ViewModels
 
         private async Task RegenerateAndRetryAsync()
         {
-            try 
+            try
             {
                 IsDownloading = true;
                 DownloadProgress = 0;
 
-                bool confirmation = await _data.RegenerateInvoicePdfAsync(Consecutive);
+                bool confirmation = await _data.RegenerateInvoicePdfAsync(Invoice_id); // ← Invoice_id
 
                 if (!confirmation)
                 {
                     IsDownloading = false;
-                    await Shell.Current.DisplayAlert(
-                        "Error",
+                    await Shell.Current.DisplayAlert("Error",
                         "No se pudo regenerar el PDF en el servidor.",
                         "Aceptar");
                     return;
                 }
 
                 var progress = new Progress<double>(p => DownloadProgress = p);
-                string path = await _pdfService.DownloadInvoicePdfAsync(Consecutive, progress);
+                string path = await _pdfService.DownloadInvoicePdfAsync(Invoice_id, progress); // ← Invoice_id
 
                 IsDownloading = false;
-
-                await Shell.Current.DisplayAlert(
-                    "Descarga completa",
+                await Shell.Current.DisplayAlert("Descarga completa",
                     $"La factura se ha guardado como:\n{Path.GetFileName(path)}",
                     "Aceptar");
 
                 await Launcher.OpenAsync(new OpenFileRequest { File = new ReadOnlyFile(path) });
-
             }
             catch (Exception ex)
             {
                 IsDownloading = false;
-                await Shell.Current.DisplayAlert(
-                    "Error",
+                await Shell.Current.DisplayAlert("Error",
                     $"Ocurrió un error al regenerar el PDF:\n{ex.Message}",
                     "Aceptar");
             }

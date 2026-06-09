@@ -7,7 +7,7 @@ namespace PLECSYS_Studio.Wrappers.Users
 
         public string? token_type { get; set; }
 
-        public decimal? expires_in { get; set; }
+        public double expires_in { get; set; }
 
         public string? email { get; set; }
 

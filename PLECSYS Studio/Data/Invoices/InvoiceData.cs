@@ -113,7 +113,7 @@ namespace PLECSYS_Studio.Data.Invoices
 
         public async Task<HttpResponseMessage> GetInvoicePdfAsync(int consecutive, CancellationToken ct = default)
         {
-            var url = $"invoices/{consecutive}/pdf"; //Homologar con la ruta correcta
+            var url = $"invoice/{consecutive}/pdf"; //Homologar con la ruta correcta
             var response = await _http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, ct);
             return response;
         }

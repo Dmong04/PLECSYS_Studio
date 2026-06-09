@@ -183,10 +183,10 @@
                     </Border>
                 </StackLayout>
 
-                <!-- SECCIÓN: Hace un mes -->
+                <!-- SECCIÓN: Hace un mes o más -->
                 <StackLayout>
                     <Grid>
-                        <Label Text="Hace un mes"
+                        <Label Text="Hace un mes o más"
                                FontSize="18" FontAttributes="Bold"
                                TextColor="{StaticResource PrimaryDarkBlue}"
                                VerticalOptions="Center"/>

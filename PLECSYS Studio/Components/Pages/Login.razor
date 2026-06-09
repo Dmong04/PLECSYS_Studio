@@ -63,6 +63,14 @@
 </div>
 
 @code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _handler.CheckSessionAndNavigate();
+        }
+    }
+
     async Task GoToRegister()
     {
         await Shell.Current.GoToAsync("//SignUpPage");

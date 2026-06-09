@@ -5,7 +5,6 @@ using PLECSYS_Studio.Services.Invoices;
 using PLECSYS_Studio.ViewModels.Invoices.Filters;
 using PLECSYS_Studio.ViewModels.Invoices.Filters.Options;
 using PLECSYS_Studio.ViewModels.Messages;
-using PLECSYS_Studio.Wrappers.Invoices;
 using PLECSYS_Studio.Services.InvoiceService;
 using PLECSYS_Studio.Data.Invoices;
 using System.Collections.ObjectModel;
@@ -83,6 +82,7 @@ namespace PLECSYS_Studio.ViewModels.Invoices
                     {
                         var vm = new SingleInvoiceViewModel(_pdfService, _invoiceData)
                         {
+                            Invoice_id = invoice.Invoice_id,
                             Consecutive = invoice.Consecutive,
                             Total_voucher = invoice.Total_voucher,
                             User_creator_id = invoice.User?.Email ?? string.Empty,

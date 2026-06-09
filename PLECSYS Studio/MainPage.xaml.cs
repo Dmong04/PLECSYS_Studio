@@ -1,4 +1,6 @@
-﻿namespace PLECSYS_Studio
+﻿using PLECSYS_Studio.Handlers;
+
+namespace PLECSYS_Studio
 {
     public partial class MainPage : ContentPage
     {
