@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PLECSYS_Studio.Services;
 using PLECSYS_Studio.Services.Invoices;
 using PLECSYS_Studio.ViewModels.Invoices.Filters.Options;
 using PLECSYS_Studio.Wrappers.Invoices;
@@ -10,6 +11,7 @@ namespace PLECSYS_Studio.ViewModels.Invoices.Filters
     public partial class CurrencyFilterViewModel : ObservableObject
     {
         private readonly IInvoiceService _service;
+        private readonly SessionService _session;
 
         [ObservableProperty]
         private CurrencyOption selectedCurrency;
@@ -18,9 +20,10 @@ namespace PLECSYS_Studio.ViewModels.Invoices.Filters
 
         public ObservableCollection<InvoiceResponse> InvoicesReference { get; set; }
 
-        public CurrencyFilterViewModel(IInvoiceService service)
+        public CurrencyFilterViewModel(IInvoiceService service, SessionService session)
         {
             _service = service;
+            _session = session;
         }
 
         [RelayCommand]
@@ -32,7 +35,7 @@ namespace PLECSYS_Studio.ViewModels.Invoices.Filters
 
             if (selectedCurrency.Currency_id is 0)
             {
-                var response = await _service.LoadInvoices();
+                var response = await _service.LoadInvoices(_session.GetEmail(), _session.GetCompanyId());
                 if (response.Data is not null)
                     foreach (var currency in response.Data)
                         InvoicesReference.Add(currency);

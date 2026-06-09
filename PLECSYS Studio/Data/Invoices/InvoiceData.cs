@@ -13,15 +13,18 @@ namespace PLECSYS_Studio.Data.Invoices
     {
         private readonly HttpClient _http = factory.CreateClient("PLECSYS");
 
-        public async Task<APIResponse<List<InvoiceResponse>>> LoadInvoices()
+        public async Task<APIResponse<List<InvoiceResponse>>> LoadInvoices(string email, int companyId)
         {
-            var response = await _http.GetFromJsonAsync<APIResponse<List<Invoice>>>("invoice/all");
+            var requestBody = new { Email = email, CompanyId = companyId };
+
+            var response = await _http.PostAsJsonAsync("invoice/all", requestBody);
+            var result = await response.Content.ReadFromJsonAsync<APIResponse<List<Invoice>>>();
 
             return new APIResponse<List<InvoiceResponse>>()
             {
-                Data = MapInvoices(response?.Data),
-                Success = response?.Success ?? false,
-                Message = response?.Message ?? "Error al cargar facturas"
+                Data = MapInvoices(result?.Data),
+                Success = result?.Success ?? false,
+                Message = result?.Message ?? "Error al cargar facturas"
             };
         }
 
@@ -110,7 +113,7 @@ namespace PLECSYS_Studio.Data.Invoices
 
         public async Task<HttpResponseMessage> GetInvoicePdfAsync(int consecutive, CancellationToken ct = default)
         {
-            var url = $"invoices/{consecutive}/pdf"; //Homologar con la ruta correcta
+            var url = $"invoice/{consecutive}/pdf"; //Homologar con la ruta correcta
             var response = await _http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, ct);
             return response;
         }

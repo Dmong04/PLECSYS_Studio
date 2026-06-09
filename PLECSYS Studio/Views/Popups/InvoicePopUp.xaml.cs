@@ -12,10 +12,18 @@ public partial class InvoicePopUp : Popup
     public decimal PendingBalance { get; set; }
 
     public InvoicePopUp(SingleInvoiceViewModel vm)
-	{
-		InitializeComponent();
-		BindingContext = vm;
-	}
+    {
+        InitializeComponent();
+        BindingContext = vm;
+        BackgroundColor = Colors.Transparent;
+
+#if ANDROID
+        if (Handler?.PlatformView is Android.Views.View view)
+        {
+            view.Background = null;
+        }
+#endif
+    }
 
     private async void OnRegisterPaymentTapped(object sender, TappedEventArgs e)
     {

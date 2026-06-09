@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PLECSYS_Studio.Services;
 using PLECSYS_Studio.Services.Invoices;
 using PLECSYS_Studio.ViewModels.Invoices.Filters.Options;
 using PLECSYS_Studio.Wrappers.Invoices;
@@ -10,6 +11,7 @@ namespace PLECSYS_Studio.ViewModels.Invoices.Filters
     public partial class ClientFilterViewModel : ObservableObject
     {
         private readonly IInvoiceService _service;
+        private readonly SessionService _session;
 
         [ObservableProperty]
         private ClientOption selectedClient;
@@ -17,9 +19,10 @@ namespace PLECSYS_Studio.ViewModels.Invoices.Filters
 
         public ObservableCollection<InvoiceResponse> InvoicesReference { get; set; }
 
-        public ClientFilterViewModel(IInvoiceService service)
+        public ClientFilterViewModel(IInvoiceService service, SessionService session)
         {
             _service = service;
+            _session = session;
         }
 
         [RelayCommand]
@@ -29,7 +32,7 @@ namespace PLECSYS_Studio.ViewModels.Invoices.Filters
 
             if (string.IsNullOrEmpty(SelectedClient.Email))
             {
-                var response = await _service.LoadInvoices();
+                var response = await _service.LoadInvoices(_session.GetEmail(), _session.GetCompanyId());
                 InvoicesReference.Clear();
                 if (response.Data is not null)
                     foreach (var invoice in response.Data)

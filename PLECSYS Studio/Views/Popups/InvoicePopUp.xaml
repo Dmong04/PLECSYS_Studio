@@ -1,191 +1,159 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <views:Popup 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
-    x:Class="PLECSYS_Studio.Views.Popups.InvoicePopUp">
+    x:Class="PLECSYS_Studio.Views.Popups.InvoicePopUp"
+    HorizontalOptions="Center"
+    VerticalOptions="Center">
 
     <Border 
-        BackgroundColor="{StaticResource White}" 
-        Padding="20"
-        WidthRequest="320"
-        HeightRequest="420"
-        Stroke="{StaticResource LightGray}">
+        BackgroundColor="{StaticResource White}"
+        Padding="24"
+        WidthRequest="300"
+        StrokeThickness="0"
+        Stroke="Transparent"
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
+        
+        <Border.Shadow>
+            <Shadow Brush="Black"
+                Offset="0,6"
+                Radius="24"
+                Opacity="0.15"/>
+        </Border.Shadow>
 
         <Border.StrokeShape>
-            <RoundRectangle CornerRadius="15"/>
+            <RoundRectangle CornerRadius="20"/>
         </Border.StrokeShape>
 
-        <VerticalStackLayout Spacing="15">
+        <VerticalStackLayout Spacing="16">
 
+            <!-- Encabezado -->
             <Grid ColumnDefinitions="*,Auto">
-
                 <Label 
                     Grid.Column="0"
-                    Text="Detalles"
+                    Text="Detalles de factura"
                     FontAttributes="Bold"
-                    FontSize="18"
+                    FontSize="17"
                     TextColor="{StaticResource PrimaryDarkBlue}"
                     VerticalOptions="Center"/>
 
-                <Button Text="X" 
-                        Grid.Column="1"
-                        Command="{Binding ClosePopupCommand}"
-                        BackgroundColor="Transparent"
-                        TextColor="{StaticResource MediumGray}"
-                        FontSize="18"
-                        WidthRequest="30"
-                        HeightRequest="30"
-                        HorizontalOptions="End"
-                        VerticalOptions="Start"/>
-
+                <Button 
+                    Grid.Column="1"
+                    Text="✕"
+                    Command="{Binding ClosePopupCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource MediumGray}"
+                    FontSize="16"
+                    WidthRequest="36"
+                    HeightRequest="36"
+                    Padding="0"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"/>
             </Grid>
 
-            <StackLayout Spacing="5">
+            <!-- Separador -->
+            <BoxView HeightRequest="1" Color="{StaticResource LightGray}" HorizontalOptions="Fill"/>
 
-                <Label Text="{Binding Consecutive, StringFormat='Numero de factura: {0}'}" 
-                       FontSize="16"
-                       TextColor="{StaticResource Black}"/>
+            <!-- Info de la factura -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="{Binding Consecutive, StringFormat='# {0}'}"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource PrimaryDarkBlue}"/>
 
                 <Label Text="{Binding Total_voucher, StringFormat='Total: ₡{0:N0}'}"
                        FontSize="15"
                        TextColor="{StaticResource Black}"/>
 
                 <Label Text="{Binding User_creator_id, StringFormat='Cliente: {0}'}"
-                       FontSize="15"
+                       FontSize="13"
                        TextColor="{StaticResource MediumGray}"/>
+            </VerticalStackLayout>
 
-            </StackLayout>
+            <!-- Separador -->
+            <BoxView HeightRequest="1" Color="{StaticResource LightGray}" HorizontalOptions="Fill"/>
 
-
+            <!-- Acciones -->
             <VerticalStackLayout Spacing="10">
 
-                
+                <!-- Descargar PDF -->
                 <Border StrokeThickness="0"
                         BackgroundColor="{StaticResource PrimaryDarkBlue}"
                         StrokeShape="RoundRectangle 25"
-                        HeightRequest="45"
-                        WidthRequest="210"
-                        Padding="10"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center">
-
+                        HeightRequest="44"
+                        Padding="12,0"
+                        HorizontalOptions="Fill">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding DownloadPdfCommand}" />
                     </Border.GestureRecognizers>
-
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                        <Image Source="pdf.png"
-                               WidthRequest="20"
-                               HeightRequest="20"
-                               Aspect="AspectFit"/>
-
-                        <Label Text="Descargar PDF"
-                               VerticalOptions="Center"
-                               TextColor="White"
-                               FontAttributes="Bold"/>
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="pdf.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit"/>
+                        <Label Text="Descargar PDF" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
                 </Border>
 
-                <VerticalStackLayout Spacing="5"
-                                     IsVisible="{Binding IsDownloading}"
-                                     HorizontalOptions="Center">
-                    
-                    <ActivityIndicator IsRunning="{Binding IsDownloading}"/>
-                    
-                    <ProgressBar Progress="{Binding DownloadProgress}"
-                                 WidthRequest="280"/>
-
+                <!-- Progress de descarga -->
+                <VerticalStackLayout Spacing="4" IsVisible="{Binding IsDownloading}" HorizontalOptions="Fill">
+                    <ActivityIndicator IsRunning="{Binding IsDownloading}" HorizontalOptions="Center"/>
+                    <ProgressBar Progress="{Binding DownloadProgress}" HorizontalOptions="Fill"/>
                     <Label Text="{Binding DownloadProgress, StringFormat='Descargando... {0:P0}'}"
-                           FontSize="13"
+                           FontSize="12"
                            TextColor="{StaticResource MediumGray}"
                            HorizontalOptions="Center"/>
                 </VerticalStackLayout>
 
+                <!-- Registrar pago -->
                 <Border StrokeThickness="0"
                         BackgroundColor="{StaticResource PrimaryDarkBlue}"
                         StrokeShape="RoundRectangle 25"
-                        HeightRequest="45"
-                        WidthRequest="210"
-                        Padding="10"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
+                        HeightRequest="44"
+                        Padding="12,0"
+                        HorizontalOptions="Fill"
                         x:Name="ThisPopupBorder">
-
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnRegisterPaymentTapped" />
                     </Border.GestureRecognizers>
-
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                        <Image Source="payment.png"
-                               WidthRequest="20"
-                               HeightRequest="20"
-                               Aspect="AspectFit"/>
-
-                        <Label Text="Registrar pago"
-                               VerticalOptions="Center"
-                               TextColor="White"
-                               FontAttributes="Bold"/>
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="payment.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit"/>
+                        <Label Text="Registrar pago" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
                 </Border>
 
-
+                <!-- Reclamo -->
                 <Border StrokeThickness="0"
                         BackgroundColor="{StaticResource PrimaryDarkBlue}"
                         StrokeShape="RoundRectangle 25"
-                        HeightRequest="45"
-                        WidthRequest="210"
-                        Padding="10"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center">
-
+                        HeightRequest="44"
+                        Padding="12,0"
+                        HorizontalOptions="Fill">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding RegisterClaimCommand}" />
                     </Border.GestureRecognizers>
-
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                        <Image Source="claim.png"
-                               WidthRequest="20"
-                               HeightRequest="20"
-                               Aspect="AspectFit"/>
-
-                        <Label Text="Reclamo"
-                               VerticalOptions="Center"
-                               TextColor="White"
-                               FontAttributes="Bold"/>
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="claim.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit"/>
+                        <Label Text="Reclamo" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
                 </Border>
 
+                <!-- Histórico -->
                 <Border StrokeThickness="0"
                         BackgroundColor="{StaticResource PrimaryDarkBlue}"
                         StrokeShape="RoundRectangle 25"
-                        HeightRequest="45"
-                        WidthRequest="210"
-                        Padding="10"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center">
-
+                        HeightRequest="44"
+                        Padding="12,0"
+                        HorizontalOptions="Fill">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenHistoryCommand}" />
                     </Border.GestureRecognizers>
-
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                        <Image Source="history.png"
-                               WidthRequest="20"
-                               HeightRequest="20"
-                               Aspect="AspectFit"/>
-
-                        <Label Text="Historico"
-                               VerticalOptions="Center"
-                               TextColor="White"
-                               FontAttributes="Bold"/>
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="history.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit"/>
+                        <Label Text="Histórico" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
                 </Border>
 
             </VerticalStackLayout>
 
         </VerticalStackLayout>
-
     </Border>
-
 </views:Popup>

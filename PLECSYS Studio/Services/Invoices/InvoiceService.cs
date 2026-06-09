@@ -1,11 +1,6 @@
 ﻿using PLECSYS_Studio.Data.Invoices;
 using PLECSYS_Studio.Wrappers;
 using PLECSYS_Studio.Wrappers.Invoices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PLECSYS_Studio.Services.Invoices
 {
@@ -115,11 +110,11 @@ namespace PLECSYS_Studio.Services.Invoices
             }
         }
 
-        public async Task<APIResponse<List<InvoiceResponse>>> LoadInvoices()
+        public async Task<APIResponse<List<InvoiceResponse>>> LoadInvoices(string email, int companyId)
         {
             try
             {
-                var invoices = await _data.LoadInvoices();
+                var invoices = await _data.LoadInvoices(email, companyId);
                 if (invoices is null)
                 {
                     return new APIResponse<List<InvoiceResponse>>()

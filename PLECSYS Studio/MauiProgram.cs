@@ -14,6 +14,7 @@ using PLECSYS_Studio.Services;
 using PLECSYS_Studio.Services.GPS;
 using PLECSYS_Studio.Services.History;
 using PLECSYS_Studio.Services.Invoices;
+using PLECSYS_Studio.Services.InvoiceService;
 using PLECSYS_Studio.Services.Products;
 using PLECSYS_Studio.Services.SaleOrderDetails;
 using PLECSYS_Studio.Services.SaleOrders;
@@ -99,6 +100,7 @@ namespace PLECSYS_Studio
             builder.Services.AddSingleton<LocationTrackingService>();
             builder.Services.AddSingleton<SessionService>();
             builder.Services.AddScoped<IInvoiceHistoryService, InvoiceHistoryService>();
+            builder.Services.AddScoped<IInvoicePdfService, InvoicePdfService>();
             // Servicios
 
             // ViewModels
@@ -131,6 +133,12 @@ namespace PLECSYS_Studio
             builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();
 #endif
+
+            // Rutas
+            Routing.RegisterRoute(nameof(Views.Payments.RegisterPaymentPage), typeof(Views.Payments.RegisterPaymentPage));
+            Routing.RegisterRoute(nameof(Views.Claims.RegisterClaimPage), typeof(Views.Claims.RegisterClaimPage));
+            Routing.RegisterRoute(nameof(Views.History.InvoiceHistoryPage), typeof(Views.History.InvoiceHistoryPage));
+            // Rutas
 
             return builder.Build();
         }

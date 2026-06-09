@@ -53,13 +53,16 @@ namespace PLECSYS_Studio.ViewModels
                 {
                     if (invoice.Expiry_date is null) continue;
                     var expiry = invoice.Expiry_date.Value.Date;
+                    var daysOverdue = (today - expiry).Days;
 
                     if (expiry == today)
-                        TodayInvoices.Add(invoice);
-                    else if (expiry >= today.AddDays(-7))
-                        WeekInvoices.Add(invoice);
-                    else if (expiry >= today.AddDays(-30))
-                        MonthInvoices.Add(invoice);
+                        TodayInvoices.Add(invoice);        // vence hoy
+                    else if (daysOverdue <= 7)
+                        WeekInvoices.Add(invoice);         // vencida hace 1-7 días
+                    else if (daysOverdue <= 30)
+                        MonthInvoices.Add(invoice);        // vencida hace 8-30 días
+                    else
+                        MonthInvoices.Add(invoice);        // vencida hace más de 30 días
                 }
             }
             catch (Exception ex)

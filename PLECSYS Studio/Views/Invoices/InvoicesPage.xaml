@@ -138,8 +138,8 @@
 
             <!-- Lista de facturas -->
             <RefreshView Grid.Row="3"
-                         Command="{Binding LoadInvoicesCommand}"
-                         IsRefreshing="{Binding IsBusy}">
+             Command="{Binding LoadInvoicesCommand}"
+             IsRefreshing="{Binding IsBusy}">
                 <CollectionView ItemsSource="{Binding Invoices}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
@@ -148,18 +148,22 @@
                                     <RoundRectangle CornerRadius="20"/>
                                 </Border.StrokeShape>
 
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenPopupCommand}" />
+                                </Border.GestureRecognizers>
+
                                 <VerticalStackLayout Spacing="5">
                                     <Label Text="{Binding Consecutive, StringFormat='Número de factura: {0}'}"
-                                           FontAttributes="Bold" FontSize="15"
-                                           TextColor="{StaticResource PrimaryDarkBlue}" />
+                               FontAttributes="Bold" FontSize="15"
+                               TextColor="{StaticResource PrimaryDarkBlue}" />
                                     <Label Text="{Binding Total_voucher, StringFormat='Total: ₡{0:N0}'}"
-                                           FontSize="14" TextColor="{StaticResource PrimaryDarkBlue}" />
-                                    <Label Text="{Binding User.Email}"
-                                           FontSize="13" TextColor="{StaticResource MediumGray}" />
-                                    <Label Text="{Binding Sell_company.Company_name}"
-                                           FontSize="13" TextColor="{StaticResource MediumGray}" />
-                                    <Label Text="{Binding Charged_company.Company_name}"
-                                           FontSize="13" TextColor="{StaticResource MediumGray}" />
+                               FontSize="14" TextColor="{StaticResource PrimaryDarkBlue}" />
+                                    <Label Text="{Binding User_creator_id}"
+                               FontSize="13" TextColor="{StaticResource MediumGray}" />
+                                    <Label Text="{Binding Sell_company}"
+                               FontSize="13" TextColor="{StaticResource MediumGray}" />
+                                    <Label Text="{Binding Charged_company}"
+                               FontSize="13" TextColor="{StaticResource MediumGray}" />
                                 </VerticalStackLayout>
                             </Border>
                         </DataTemplate>

@@ -10,17 +10,12 @@ namespace PLECSYS_Studio.Handlers
 {
     public class LoginHandler
     {
-
         private readonly IUserService _service;
-
         private readonly ShellViewModel _shellViewModel;
-
         private readonly LocationTrackingService _trackingService;
-
         private readonly SessionService _sessionService;
 
         public required string Email { get; set; }
-
         public required string Password { get; set; }
 
         public LoginHandler(IUserService service, ShellViewModel shellViewModel, LocationTrackingService trackingService, SessionService sessionService)
@@ -29,6 +24,18 @@ namespace PLECSYS_Studio.Handlers
             _shellViewModel = shellViewModel;
             _trackingService = trackingService;
             _sessionService = sessionService;
+        }
+
+        // ← nuevo: se llama desde OnAppearing del Login
+        public async Task CheckSessionAndNavigate()
+        {
+            if (_sessionService.HasValidSession())
+            {
+                await Shell.Current.DisplayAlert(
+                    $"Bienvenido de nuevo, {_sessionService.GetEmail()}",
+                    "Sesión activa encontrada", "Continuar");
+                SessionManager.SwitchtoAppShell(_shellViewModel);
+            }
         }
 
         public async Task LoginWithoutAPI()
@@ -53,7 +60,6 @@ namespace PLECSYS_Studio.Handlers
                     return;
                 }
 
-                // Si el usuario solo tiene una compañía, la seleccionamos automáticamente
                 if (login.Data?.linked_companies?.Count == 1)
                 {
                     var only = login.Data.linked_companies.First();
@@ -83,10 +89,11 @@ namespace PLECSYS_Studio.Handlers
                         _sessionService.GetCompanyId(),
                         _sessionService.GetCompanyName());
                 }
+
                 await Shell.Current.DisplayAlert($"Bienvenido, {login.Data?.email}",
                     "Inicio de sesión exitoso", "Aceptar");
                 SessionManager.SwitchtoAppShell(_shellViewModel);
-                await _trackingService.StartTracking();
+                // await _trackingService.StartTracking();
             }
             catch (Exception ex)
             {
