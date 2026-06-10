@@ -1,9 +1,12 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using PLECSYS_Studio.Data.Companies;
+using PLECSYS_Studio.Data.Currencies;
 using PLECSYS_Studio.Data.GPS;
 using PLECSYS_Studio.Data.History;
 using PLECSYS_Studio.Data.Invoices;
+using PLECSYS_Studio.Data.PaymentMethods;
+using PLECSYS_Studio.Data.PaymentRecords;
 using PLECSYS_Studio.Data.Products;
 using PLECSYS_Studio.Data.SaleOrderDetails;
 using PLECSYS_Studio.Data.SaleOrders;
@@ -11,10 +14,14 @@ using PLECSYS_Studio.Data.Users;
 using PLECSYS_Studio.Handlers;
 using PLECSYS_Studio.Handlers.GPS;
 using PLECSYS_Studio.Services;
+using PLECSYS_Studio.Services.Currencies;
 using PLECSYS_Studio.Services.GPS;
 using PLECSYS_Studio.Services.History;
 using PLECSYS_Studio.Services.Invoices;
 using PLECSYS_Studio.Services.InvoiceService;
+using PLECSYS_Studio.Services.PaymentMethods;
+using PLECSYS_Studio.Services.Payments;
+using PLECSYS_Studio.Services.PaymentService;
 using PLECSYS_Studio.Services.Products;
 using PLECSYS_Studio.Services.SaleOrderDetails;
 using PLECSYS_Studio.Services.SaleOrders;
@@ -24,10 +31,12 @@ using PLECSYS_Studio.ViewModels.GPS;
 using PLECSYS_Studio.ViewModels.History;
 using PLECSYS_Studio.ViewModels.Invoices;
 using PLECSYS_Studio.ViewModels.Invoices.Filters;
+using PLECSYS_Studio.ViewModels.Payments;
 using PLECSYS_Studio.ViewModels.SaleOrders;
 using PLECSYS_Studio.ViewModels.SaleOrders.Options;
 using PLECSYS_Studio.ViewModels.SmartFlow;
 using PLECSYS_Studio.Views.History;
+using PLECSYS_Studio.Views.Payments;
 using PLECSYS_Studio.Views.SmartFlow;
 
 namespace PLECSYS_Studio
@@ -83,6 +92,9 @@ namespace PLECSYS_Studio
             builder.Services.AddScoped<LocationData>();
             builder.Services.AddTransient<TrackingConfigHandler>();
             builder.Services.AddScoped<InvoiceHistoryData>();
+            builder.Services.AddScoped<PaymentMethodData>();
+            builder.Services.AddScoped<CurrencyData>();
+            builder.Services.AddScoped<PaymentRecordData>();
             // Handlers de datos
 
             // handlers
@@ -101,6 +113,9 @@ namespace PLECSYS_Studio
             builder.Services.AddSingleton<SessionService>();
             builder.Services.AddScoped<IInvoiceHistoryService, InvoiceHistoryService>();
             builder.Services.AddScoped<IInvoicePdfService, InvoicePdfService>();
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+            builder.Services.AddScoped<IPaymentRecordService, PaymentRecordService>();
             // Servicios
 
             // ViewModels
@@ -123,6 +138,8 @@ namespace PLECSYS_Studio
             builder.Services.AddTransient<SmartFlowViewModel>();
             builder.Services.AddScoped<InvoiceHistoryViewModel>();
             builder.Services.AddScoped<InvoiceHistoryPage>();
+            builder.Services.AddScoped<RegisterPaymentViewModel>();
+            builder.Services.AddScoped<RegisterPaymentPage>();
             // ViewModels
 
             // Shells

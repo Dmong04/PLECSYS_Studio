@@ -39,6 +39,9 @@ namespace PLECSYS_Studio.Services
         public int GetCompanyId() => Preferences.Get(CompanyIdKey, 0);
         public string GetCompanyName() => Preferences.Get(CompanyNameKey, string.Empty);
 
+        public int CurrentInvoiceId { get; set; }
+        public int CurrentInvoiceConsecutive { get; set; }
+
         public List<SmartFlowOption> GetLinkedProcesses()
         {
             var raw = Preferences.Get(LinkedProcessesKey, string.Empty);

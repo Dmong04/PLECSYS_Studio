@@ -63,6 +63,7 @@
                         Padding="4,0">
                     <Picker ItemsSource="{Binding Currencies}"
                             SelectedItem="{Binding SelectedCurrency}"
+                            ItemDisplayBinding="{Binding CurrencyName}"
                             Title="Seleccione una moneda"
                             FontSize="14"
                             TextColor="{StaticResource PrimaryDarkBlue}"
@@ -82,7 +83,7 @@
                         StrokeShape="RoundRectangle 8"
                         Padding="4,0">
                     <Picker ItemsSource="{Binding PaymentMethods}"
-                            ItemDisplayBinding="{Binding PaymentMethod_Name}"
+                            ItemDisplayBinding="{Binding PaymentMethodName}"
                             SelectedItem="{Binding SelectedPaymentMethod}"
                             Title="Seleccione un método"
                             FontSize="14"
@@ -156,7 +157,7 @@
                                WidthRequest="20"
                                HeightRequest="20"
                                Aspect="AspectFit" />
-                        <DatePicker Date="{Binding Date}"
+                        <DatePicker Date="{Binding PaymentDate}"
                                     Format="dd/MM/yyyy"
                                     MaximumDate="{x:Static sys:DateTime.Now}"
                                     BackgroundColor="Transparent"

@@ -10,7 +10,7 @@ namespace PLECSYS_Studio.Services.PaymentMethods
         {
             try
             {
-                var response = await _data.GetAllPaymentmethods();
+                var response = await _data.GetAllPaymentMethods();
                 if (response?.Data?.Count == 0)
                 {
                     return new APIResponse<List<PaymentMethodResponse>>()
