@@ -23,7 +23,7 @@
         </VerticalStackLayout>
 
         <ScrollView Grid.Row="2" Padding="0,0,0,20">
-            
+
             <VerticalStackLayout Padding="24,20" Spacing="12" HorizontalOptions="Center" WidthRequest="330">
 
                 <Label Text="{Binding InvoiceConsecutive, StringFormat='Factura asociada: #{0}'}"
@@ -42,18 +42,19 @@
                         HeightRequest="48"
                         StrokeShape="RoundRectangle 8"
                         Padding="4,0">
-                    <Entry Placeholder="Ej:00015"
+                    <Entry Placeholder="{Binding InvoiceConsecutive}"
                            Text="{Binding PaymentConsecutive}"
                            FontSize="14"
                            Keyboard="Numeric"
+                           IsReadOnly="True"
                            BackgroundColor="Transparent"
-                           TextColor="{StaticResource PrimaryDarkBlue}" />
+                           TextColor="{StaticResource MediumGray}" />
                 </Border>
 
                 <Label Text="Moneda"
                        FontAttributes="Bold"
                        TextColor="{StaticResource PrimaryDarkBlue}" />
-                
+
                 <Border Stroke="{StaticResource PrimaryDarkBlue}"
                     StrokeThickness="1"
                         BackgroundColor="Transparent"
@@ -63,6 +64,7 @@
                         Padding="4,0">
                     <Picker ItemsSource="{Binding Currencies}"
                             SelectedItem="{Binding SelectedCurrency}"
+                            ItemDisplayBinding="{Binding CurrencyName}"
                             Title="Seleccione una moneda"
                             FontSize="14"
                             TextColor="{StaticResource PrimaryDarkBlue}"
@@ -82,7 +84,7 @@
                         StrokeShape="RoundRectangle 8"
                         Padding="4,0">
                     <Picker ItemsSource="{Binding PaymentMethods}"
-                            ItemDisplayBinding="{Binding PaymentMethod_Name}"
+                            ItemDisplayBinding="{Binding PaymentMethodName}"
                             SelectedItem="{Binding SelectedPaymentMethod}"
                             Title="Seleccione un método"
                             FontSize="14"
@@ -109,7 +111,7 @@
             Padding="6,2"
             HeightRequest="80">
                             <Editor Placeholder="Especifique el método de pago"
-                Text="{Binding OtherMethodDetail}"
+                Text="{Binding PaymentMethodDetail}"
                 AutoSize="Disabled"
                 BackgroundColor="Transparent"
                 TextColor="{StaticResource PrimaryDarkBlue}"
@@ -133,7 +135,7 @@
                         Padding="4,0">
                     <Entry Placeholder="0.00"
                            Keyboard="Numeric"
-                           Text="{Binding Amount}"
+                           Text="{Binding PaymentAmount}"
                            BackgroundColor="Transparent"
                            TextColor="{StaticResource PrimaryDarkBlue}"
                            FontSize="14"/>
@@ -150,13 +152,13 @@
                         HeightRequest="48"
                         StrokeShape="RoundRectangle 8"
                         Padding="4,0">
-                    
+
                     <HorizontalStackLayout Spacing="8">
                         <Image Source="calendar.png"
                                WidthRequest="20"
                                HeightRequest="20"
                                Aspect="AspectFit" />
-                        <DatePicker Date="{Binding Date}"
+                        <DatePicker Date="{Binding PaymentDate}"
                                     Format="dd/MM/yyyy"
                                     MaximumDate="{x:Static sys:DateTime.Now}"
                                     BackgroundColor="Transparent"
@@ -196,7 +198,7 @@
                         VerticalOptions="Center">
 
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SaveCommand}" />
+                        <TapGestureRecognizer Command="{Binding RegisterPaymentCommand}" />
                     </Border.GestureRecognizers>
 
                     <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">

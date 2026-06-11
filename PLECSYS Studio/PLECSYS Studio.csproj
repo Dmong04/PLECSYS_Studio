@@ -115,8 +115,14 @@
 		<MauiXaml Update="Views\GPS\TrackingConfigPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Views\History\ClaimHistoryPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\History\InvoiceHistoryPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\History\PaymentHistoryPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\Payments\RegisterPaymentPage.xaml">
 			<Generator>MSBuild:Compile</Generator>

@@ -1,9 +1,13 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using PLECSYS_Studio.Data.Claims;
 using PLECSYS_Studio.Data.Companies;
+using PLECSYS_Studio.Data.Currencies;
 using PLECSYS_Studio.Data.GPS;
 using PLECSYS_Studio.Data.History;
 using PLECSYS_Studio.Data.Invoices;
+using PLECSYS_Studio.Data.PaymentMethods;
+using PLECSYS_Studio.Data.PaymentRecords;
 using PLECSYS_Studio.Data.Products;
 using PLECSYS_Studio.Data.SaleOrderDetails;
 using PLECSYS_Studio.Data.SaleOrders;
@@ -11,19 +15,25 @@ using PLECSYS_Studio.Data.Users;
 using PLECSYS_Studio.Handlers;
 using PLECSYS_Studio.Handlers.GPS;
 using PLECSYS_Studio.Services;
+using PLECSYS_Studio.Services.Currencies;
 using PLECSYS_Studio.Services.GPS;
 using PLECSYS_Studio.Services.History;
 using PLECSYS_Studio.Services.Invoices;
 using PLECSYS_Studio.Services.InvoiceService;
+using PLECSYS_Studio.Services.PaymentMethods;
+using PLECSYS_Studio.Services.Payments;
+using PLECSYS_Studio.Services.PaymentService;
 using PLECSYS_Studio.Services.Products;
 using PLECSYS_Studio.Services.SaleOrderDetails;
 using PLECSYS_Studio.Services.SaleOrders;
 using PLECSYS_Studio.Services.Users;
 using PLECSYS_Studio.ViewModels;
+using PLECSYS_Studio.ViewModels.Claims;
 using PLECSYS_Studio.ViewModels.GPS;
 using PLECSYS_Studio.ViewModels.History;
 using PLECSYS_Studio.ViewModels.Invoices;
 using PLECSYS_Studio.ViewModels.Invoices.Filters;
+using PLECSYS_Studio.ViewModels.PaymentRecords;
 using PLECSYS_Studio.ViewModels.SaleOrders;
 using PLECSYS_Studio.ViewModels.SaleOrders.Options;
 using PLECSYS_Studio.ViewModels.SmartFlow;
@@ -57,9 +67,9 @@ namespace PLECSYS_Studio
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             })
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-             {
-                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-             });
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+                });
 
 
             builder.Services.AddHttpClient("PLECSYS_API", client =>
@@ -68,9 +78,9 @@ namespace PLECSYS_Studio
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             })
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            });
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+                });
 
             // Handlers de datos
             builder.Services.AddSingleton<InvoiceData>();
@@ -83,6 +93,10 @@ namespace PLECSYS_Studio
             builder.Services.AddScoped<LocationData>();
             builder.Services.AddTransient<TrackingConfigHandler>();
             builder.Services.AddScoped<InvoiceHistoryData>();
+            builder.Services.AddScoped<PaymentRecordData>();
+            builder.Services.AddScoped<ClaimData>();
+            builder.Services.AddScoped<CurrencyData>();
+            builder.Services.AddScoped<PaymentMethodData>();
             // Handlers de datos
 
             // handlers
@@ -101,6 +115,9 @@ namespace PLECSYS_Studio
             builder.Services.AddSingleton<SessionService>();
             builder.Services.AddScoped<IInvoiceHistoryService, InvoiceHistoryService>();
             builder.Services.AddScoped<IInvoicePdfService, InvoicePdfService>();
+            builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            builder.Services.AddScoped<IPaymentRecordService, PaymentRecordService>();
             // Servicios
 
             // ViewModels
@@ -121,8 +138,14 @@ namespace PLECSYS_Studio
             builder.Services.AddTransient<CompanySelectionViewModel>();
             builder.Services.AddTransient<SmartFlowPage>();
             builder.Services.AddTransient<SmartFlowViewModel>();
+            builder.Services.AddTransient<RegisterPaymentViewModel>();
             builder.Services.AddScoped<InvoiceHistoryViewModel>();
+            builder.Services.AddScoped<PaymentHistoryViewModel>();
+            builder.Services.AddScoped<RegisterClaimViewModel>();
+            builder.Services.AddScoped<ClaimHistoryViewModel>();
             builder.Services.AddScoped<InvoiceHistoryPage>();
+            builder.Services.AddScoped<ClaimHistoryPage>();
+            builder.Services.AddScoped<PaymentHistoryPage>();
             // ViewModels
 
             // Shells
@@ -138,6 +161,8 @@ namespace PLECSYS_Studio
             Routing.RegisterRoute(nameof(Views.Payments.RegisterPaymentPage), typeof(Views.Payments.RegisterPaymentPage));
             Routing.RegisterRoute(nameof(Views.Claims.RegisterClaimPage), typeof(Views.Claims.RegisterClaimPage));
             Routing.RegisterRoute(nameof(Views.History.InvoiceHistoryPage), typeof(Views.History.InvoiceHistoryPage));
+            Routing.RegisterRoute(nameof(Views.History.PaymentHistoryPage), typeof(Views.History.PaymentHistoryPage));
+            Routing.RegisterRoute(nameof(Views.History.ClaimHistoryPage), typeof(Views.History.ClaimHistoryPage));
             // Rutas
 
             return builder.Build();

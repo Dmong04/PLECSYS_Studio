@@ -12,6 +12,18 @@ namespace PLECSYS_Studio.Data.History
     {
         private readonly HttpClient _http = factory.CreateClient("PLECSYS");
 
+        public async Task<APIResponse<List<InvoiceHistoryResponse>>> GetPaymentHistory(int invoiceId)
+        {
+            var response = await _http.GetAsync($"invoice/payment/history/{invoiceId}");
+            return await response.Content.ReadFromJsonAsync<APIResponse<List<InvoiceHistoryResponse>>>();
+        }
+
+        public async Task<APIResponse<List<InvoiceHistoryResponse>>> GetClaimHistory(int invoiceId)
+        {
+            var response = await _http.GetAsync($"invoice/claim/history/{invoiceId}");
+            return await response.Content.ReadFromJsonAsync<APIResponse<List<InvoiceHistoryResponse>>>();
+        }
+
         public async Task<APIResponse<List<InvoiceHistoryResponse>>> GetInvoiceHistoryByUserAndCompanyId(FindHistoryRequest request)
         {
             var token = session.GetAccessToken();

@@ -14,7 +14,7 @@
         Stroke="Transparent"
         HorizontalOptions="Center"
         VerticalOptions="Center">
-        
+
         <Border.Shadow>
             <Shadow Brush="Black"
                 Offset="0,6"
@@ -112,27 +112,33 @@
                         HorizontalOptions="Fill"
                         x:Name="ThisPopupBorder">
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnRegisterPaymentTapped" />
+                        <TapGestureRecognizer Command="{Binding RegisterPaymentCommand}" />
                     </Border.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="payment.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit"/>
-                        <Label Text="Registrar pago" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center"/>
+                    <HorizontalStackLayout Spacing="8" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center"
+                           InputTransparent="True">
+                        <Image Source="payment.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" InputTransparent="True"/>
+                        <Label Text="Registrar pago" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center" InputTransparent="True"/>
                     </HorizontalStackLayout>
                 </Border>
 
                 <!-- Reclamo -->
                 <Border StrokeThickness="0"
-                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
-                        StrokeShape="RoundRectangle 25"
-                        HeightRequest="44"
-                        Padding="12,0"
-                        HorizontalOptions="Fill">
+        BackgroundColor="{StaticResource PrimaryDarkBlue}"
+        StrokeShape="RoundRectangle 25"
+        HeightRequest="44"
+        Padding="12,0"
+        HorizontalOptions="Fill">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding RegisterClaimCommand}" />
                     </Border.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="claim.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit"/>
-                        <Label Text="Reclamo" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center"/>
+                    <HorizontalStackLayout Spacing="8" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center"
+                           InputTransparent="True">
+                        <Image Source="claim.png" WidthRequest="18" HeightRequest="18" Aspect="AspectFit" InputTransparent="True"/>
+                        <Label Text="Reclamo" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center" InputTransparent="True"/>
                     </HorizontalStackLayout>
                 </Border>
 
