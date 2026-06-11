@@ -1,102 +1,107 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PLECSYS_Studio.Data.Currencies;
-using PLECSYS_Studio.Data.PaymentMethods;
-using PLECSYS_Studio.Data.PaymentRecords;
-using PLECSYS_Studio.Services;
-using PLECSYS_Studio.Services.Payments;
+using PLECSYS_Studio.Services.Currencies;
+using PLECSYS_Studio.Services.PaymentMethods;
 using PLECSYS_Studio.Services.PaymentService;
 using PLECSYS_Studio.Wrappers.Currencies;
 using PLECSYS_Studio.Wrappers.PaymentMethods;
 using PLECSYS_Studio.Wrappers.PaymentRecords;
 using System.Collections.ObjectModel;
-using System.Text.Json;
-using static MongoDB.Driver.WriteConcern;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace PLECSYS_Studio.ViewModels.Payments
+namespace PLECSYS_Studio.ViewModels.PaymentRecords
 {
-    public partial class RegisterPaymentViewModel : ObservableObject
+    public partial class RegisterPaymentViewModel : ObservableObject, IQueryAttributable
     {
-        private readonly IPaymentRecordService _service;
-        private readonly PaymentMethodData _paymentMethodData;
-        private readonly CurrencyData _currencyData;
-        private readonly SessionService _session;
+        private readonly ICurrencyService _currencyService;
+        private readonly IPaymentMethodService _paymentMethodService;
+        private readonly IPaymentRecordService _paymentRecordService;
 
-        [ObservableProperty]
-        private bool isBusy;
-
-        [ObservableProperty]
-        private int invoiceConsecutive;
-
-        [ObservableProperty]
-        private string thirdPartyTransactionId = string.Empty;
-
-        [ObservableProperty]
-        private CurrencyResponse? selectedCurrency;
-
-        [ObservableProperty]
-        private PaymentMethodResponse? selectedPaymentMethod;
-
-        [ObservableProperty]
-        private bool isOtherMethod;
-
-        [ObservableProperty]
-        private string otherMethodDetail = string.Empty;
-
-        [ObservableProperty]
-        private string amount = string.Empty;
-
-        [ObservableProperty]
-        private DateTime paymentDate = DateTime.Today;
-
-        [ObservableProperty]
-        private string paymentDetail = string.Empty;
+        [ObservableProperty] private int invoiceId;
+        [ObservableProperty] private int invoiceConsecutive;
+        [ObservableProperty] private string? paymentConsecutive;
+        [ObservableProperty] private CurrencyResponse? selectedCurrency;
+        [ObservableProperty] private PaymentMethodResponse? selectedPaymentMethod;
+        [ObservableProperty] private string? paymentMethodDetail;
+        [ObservableProperty] private decimal? paymentAmount;
+        [ObservableProperty] private DateTime? paymentDate;
+        [ObservableProperty] private string? paymentDetail;
+        [ObservableProperty] private decimal pendingBalance;
+        [ObservableProperty] private string? thirdPartyTransactionId;
+        [ObservableProperty] private bool isBusy;
+        [ObservableProperty] private bool isOtherMethod;
 
         public ObservableCollection<CurrencyResponse> Currencies { get; } = [];
         public ObservableCollection<PaymentMethodResponse> PaymentMethods { get; } = [];
 
         public RegisterPaymentViewModel(
-            IPaymentRecordService service,
-            PaymentMethodData paymentMethodData,
-            CurrencyData currencyData,
-            SessionService session)
+            ICurrencyService currencyService,
+            IPaymentMethodService paymentMethodService,
+            IPaymentRecordService paymentRecordService)
         {
-            _service = service;
-            _paymentMethodData = paymentMethodData;
-            _currencyData = currencyData;
-            _session = session;
+            _currencyService = currencyService;
+            _paymentMethodService = paymentMethodService;
+            _paymentRecordService = paymentRecordService;
         }
 
-        // Detecta si el método seleccionado es OTRO (código 99)
-        partial void OnSelectedPaymentMethodChanged(PaymentMethodResponse? value)
-            => IsOtherMethod = value?.PaymentMethodCode == 99;
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.TryGetValue("invoiceId", out var invoiceId))
+                InvoiceId = Convert.ToInt32(invoiceId);
+
+            if (query.TryGetValue("invoiceConsecutive", out var consecutive))
+            {
+                InvoiceConsecutive = Convert.ToInt32(consecutive);
+                PaymentConsecutive = InvoiceConsecutive.ToString();
+            }
+
+            if (query.TryGetValue("pendingBalance", out var balance))
+                PendingBalance = Convert.ToDecimal(balance);
+        }
+
+        public async Task InitializeAsync()
+        {
+            await LoadCurrencies();
+            await LoadPaymentMethods();
+        }
 
         [RelayCommand]
-        public async Task Load()
+        public async Task LoadCurrencies()
         {
-            if (IsBusy) return;
-            IsBusy = true;
-
             try
             {
-                InvoiceConsecutive = _session.CurrentInvoiceConsecutive;
-
-                var methods = await _paymentMethodData.GetAllPaymentMethods();
-                PaymentMethods.Clear();
-                if (methods.Success && methods.Data is not null)
-                    foreach (var m in methods.Data)
-                        PaymentMethods.Add(m);
-
-                var currencies = await _currencyData.GetAllCurrencies();
+                IsBusy = true;
+                var response = await _currencyService.GetCurrencies();
                 Currencies.Clear();
-                if (currencies.Success && currencies.Data is not null)
-                    foreach (var c in currencies.Data)
-                        Currencies.Add(c);
+
+                if (response.Data?.Count is not 0)
+                    foreach (var currency in response.Data) Currencies.Add(currency);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudieron cargar los datos: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"Hubo un error al selecionar la moneda de pago: {ex.Message}", "Ok");
+                return;
+            }
+            finally { IsBusy = false; }
+        }
+
+        [RelayCommand]
+        public async Task LoadPaymentMethods()
+        {
+            try
+            {
+                IsBusy = true;
+                var response = await _paymentMethodService.GetPaymentMethods();
+                PaymentMethods.Clear();
+
+                if (response.Data is not null)
+                    foreach (var method in response.Data)
+                        PaymentMethods.Add(method);
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error",
+                    $"Hubo un error al cargar los métodos de pago: {ex.Message}", "Ok");
+                return;
             }
             finally
             {
@@ -105,68 +110,38 @@ namespace PLECSYS_Studio.ViewModels.Payments
         }
 
         [RelayCommand]
-        public async Task Save()
+        public async Task RegisterPayment()
         {
-            if (!decimal.TryParse(amount, out var parsedAmount) || parsedAmount <= 0)
-            {
-                await Shell.Current.DisplayAlert("Error", "Ingrese un monto válido.", "OK");
-                return;
-            }
-            if (selectedCurrency is null)
-            {
-                await Shell.Current.DisplayAlert("Error", "Seleccione una moneda.", "OK");
-                return;
-            }
-            if (selectedPaymentMethod is null)
-            {
-                await Shell.Current.DisplayAlert("Error", "Seleccione un método de pago.", "OK");
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(paymentDetail))
-            {
-                await Shell.Current.DisplayAlert("Error", "Ingrese el detalle del pago.", "OK");
-                return;
-            }
-            if (IsOtherMethod && string.IsNullOrWhiteSpace(otherMethodDetail))
-            {
-                await Shell.Current.DisplayAlert("Error", "Especifique el detalle del método de pago.", "OK");
-                return;
-            }
-
-            IsBusy = true;
             try
             {
-                var request = new PaymentRecordRequest
+                IsBusy = true;
+                var request = new PaymentRecordRequest()
                 {
-                    Source_id = _session.CurrentInvoiceId,
-                    Currency_id = SelectedCurrency.CurrencyId,
-                    Payment_method_id = SelectedPaymentMethod.PaymentMethodId,
-                    Detail_payment_method = IsOtherMethod ? OtherMethodDetail : null,
-                    Paid_amount = parsedAmount,
-                    Payment_date = PaymentDate,
-                    Payment_detail = PaymentDetail,
-                    Third_party_transaction_id = string.IsNullOrWhiteSpace(ThirdPartyTransactionId)
-                        ? Guid.NewGuid().ToString("N")[..8]  // genera uno si está vacío
-                        : ThirdPartyTransactionId
+                    SourceId = InvoiceId,
+                    CurrencyId = SelectedCurrency?.CurrencyId ?? 0,
+                    PaymentMethodId = SelectedPaymentMethod?.PaymentMethodId ?? 0,
+                    DetailPaymentmethod = PaymentMethodDetail,
+                    PaidAmount = PaymentAmount ?? 0,
+                    PaymentDate = PaymentDate ?? DateTime.Now,
+                    PaymentDetail = PaymentDetail,
+                    ThirdpartytransactionId = ThirdPartyTransactionId ?? string.Empty
                 };
+                var response = await _paymentRecordService.RegisterPaymentAsync(request);
 
-                var result = await _service.RegisterPaymentAsync(request);
-
-                var json = JsonSerializer.Serialize(request);
-                Console.WriteLine($"Request body: {json}");
-
-                if (result is null || !result.Success)
+                if (!response.Success)
                 {
-                    await Shell.Current.DisplayAlert("Error", result?.Message ?? "Error al registrar el pago.", "OK");
+                    await Shell.Current.DisplayAlert("Error al registrar pago", response.Message, "Aceptar");
                     return;
                 }
 
-                await Shell.Current.DisplayAlert("Éxito", "Pago registrado correctamente.", "OK");
+                await Shell.Current.DisplayAlert("Pago registrado", response.Message, "Aceptar");
                 await Shell.Current.GoToAsync("..");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"Ha ocurrido un problema: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error",
+                    $"Hubo un error al Registrar pago: {ex.Message}", "Ok");
+                return;
             }
             finally
             {
@@ -174,7 +149,16 @@ namespace PLECSYS_Studio.ViewModels.Payments
             }
         }
 
+        partial void OnSelectedPaymentMethodChanged(PaymentMethodResponse? value)
+        {
+            IsOtherMethod = value?.PaymentMethodCode == 99;
+        }
+
+        // GoBack
         [RelayCommand]
-        public async Task GoBack() => await Shell.Current.GoToAsync("..");
+        public async Task GoBack()
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }

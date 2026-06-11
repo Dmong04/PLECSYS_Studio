@@ -26,6 +26,8 @@ namespace PLECSYS_Studio.ViewModels
         public string Sell_company { get; set; } = string.Empty;
         public string Charged_company { get; set; } = string.Empty;
 
+        public void SetPopup(Popup popup) => currentPopup = popup;
+
 
         [ObservableProperty] private string status = "Pendiente";
         [ObservableProperty] private decimal pendingBalance;
@@ -36,15 +38,15 @@ namespace PLECSYS_Studio.ViewModels
 
         private Popup? currentPopup;
 
-        
+
         public SingleInvoiceViewModel(IInvoicePdfService pdfService, InvoiceData data)
         {
             _pdfService = pdfService;
             _data = data;
 
-            WeakReferenceMessenger.Default.Register<PaymentRegisteredMessage>(this, (_,msg) =>
+            WeakReferenceMessenger.Default.Register<PaymentRegisteredMessage>(this, (_, msg) =>
             {
-                if(msg.InvoiceConsecutive !=Consecutive) return;
+                if (msg.InvoiceConsecutive != Consecutive) return;
 
                 PendingBalance = msg.NewPendingBalance;
                 Status = string.IsNullOrWhiteSpace(msg.NewStatus)
@@ -69,6 +71,8 @@ namespace PLECSYS_Studio.ViewModels
                 Consecutive = Consecutive,
                 PendingBalance = PendingBalance
             };
+
+            currentPopup = popup;
 
             if (Shell.Current != null)
             {
@@ -99,45 +103,58 @@ namespace PLECSYS_Studio.ViewModels
         }
         // Invoice Funtions
         [RelayCommand]
-        public async Task OpenHistoryAsync()
+        public async Task OpenHistory()
         {
             try
             {
-                currentPopup?.CloseAsync();
-                await Shell.Current.GoToAsync($"{nameof(InvoiceHistoryPage)}?invoiceConsecutive={Consecutive}");
+                var popup = currentPopup;
+                currentPopup = null;
+                popup?.CloseAsync(); // sin await
+
+                await Shell.Current.GoToAsync(
+                    $"{nameof(InvoiceHistoryPage)}?invoiceConsecutive={Consecutive}");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error",$"No se pudo abrir el histórico: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"No se pudo abrir el histórico: {ex.Message}", "OK");
             }
         }
 
         [RelayCommand]
-        public async Task RegisterPaymentAsync()
+        public async Task RegisterPayment()
         {
-            try 
-            { 
-                currentPopup?.CloseAsync();
+            try
+            {
+                var popup = currentPopup;
+                currentPopup = null;
+                popup?.CloseAsync(); // sin await
 
-                await Shell.Current.GoToAsync($"{nameof(RegisterPaymentPage)}?invoiceConsecutive={Consecutive}&pendingBalance={PendingBalance}");
+                await Shell.Current.GoToAsync(
+                    $"{nameof(PaymentHistoryPage)}?invoiceId={Invoice_id}&invoiceConsecutive={Consecutive}");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudo abrir la página de registro de pagos: {ex.Message}", "Ok");
+                await Shell.Current.DisplayAlert("Error",
+                    $"No se pudo abrir el historial de pagos: {ex.Message}", "Ok");
             }
         }
 
         [RelayCommand]
-        public async Task RegisterClaimAsync()
+        public async Task RegisterClaim()
         {
             try
             {
-                currentPopup?.CloseAsync();
-                await Shell.Current.GoToAsync($"{nameof(RegisterClaimPage)}?invoiceConsecutive={Consecutive}");
+                var popup = currentPopup;
+                currentPopup = null;
+                popup?.CloseAsync(); // sin await
+
+                await Shell.Current.GoToAsync(
+                    $"{nameof(ClaimHistoryPage)}?invoiceId={Invoice_id}&invoiceConsecutive={Consecutive}");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"No se pudo abrir la página de reclamos: {ex.Message}", "Ok");
+                await Shell.Current.DisplayAlert("Error",
+                    $"No se pudo abrir el historial de reclamos: {ex.Message}", "Ok");
             }
         }
 

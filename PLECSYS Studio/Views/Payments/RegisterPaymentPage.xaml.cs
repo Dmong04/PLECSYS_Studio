@@ -1,9 +1,8 @@
-﻿using PLECSYS_Studio.ViewModels;
-using PLECSYS_Studio.ViewModels.Payments;
+﻿using PLECSYS_Studio.ViewModels.PaymentRecords;
 
 namespace PLECSYS_Studio.Views.Payments
 {
-    public partial class RegisterPaymentPage : ContentPage
+    public partial class RegisterPaymentPage : ContentPage, IQueryAttributable
     {
         private readonly RegisterPaymentViewModel _vm;
 
@@ -14,10 +13,15 @@ namespace PLECSYS_Studio.Views.Payments
             _vm = vm;
         }
 
-        protected override async void OnAppearing()
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            base.OnAppearing();
-            await _vm.LoadCommand.ExecuteAsync(null);
+            _vm.ApplyQueryAttributes(query);
+        }
+
+        protected override void OnNavigatedTo(NavigatedToEventArgs args)
+        {
+            base.OnNavigatedTo(args);
+            _ = _vm.InitializeAsync();
         }
     }
 }

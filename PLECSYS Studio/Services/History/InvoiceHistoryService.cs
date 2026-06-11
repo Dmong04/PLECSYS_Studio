@@ -13,6 +13,35 @@ namespace PLECSYS_Studio.Services.History
             _data = data;
         }
 
+        public async Task<APIResponse<List<InvoiceHistoryResponse>>> GetClaimHistory(int invoiceId)
+        {
+            try
+            {
+                var response = await _data.GetClaimHistory(invoiceId);
+
+                if (response.Data is null)
+                {
+                    return new APIResponse<List<InvoiceHistoryResponse>>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = response.Message
+                    };
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new APIResponse<List<InvoiceHistoryResponse>>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
         public async Task<APIResponse<List<InvoiceHistoryResponse>>> GetInvoicesHistorybyUseraAndCompanyId(FindHistoryRequest request)
         {
             try
@@ -33,6 +62,35 @@ namespace PLECSYS_Studio.Services.History
             catch (Exception ex)
             {
                 return new APIResponse<List<InvoiceHistoryResponse>>()
+                {
+                    Data = null,
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<APIResponse<List<InvoiceHistoryResponse>>> GetPaymentHistory(int invoiceId)
+        {
+            try
+            {
+                var response = await _data.GetPaymentHistory(invoiceId);
+
+                if (response.Data is null)
+                {
+                    return new APIResponse<List<InvoiceHistoryResponse>>
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = response.Message
+                    };
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new APIResponse<List<InvoiceHistoryResponse>>
                 {
                     Data = null,
                     Success = false,
