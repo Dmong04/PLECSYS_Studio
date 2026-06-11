@@ -18,6 +18,7 @@ namespace PLECSYS_Studio.ViewModels.PaymentRecords
 
         [ObservableProperty] private int invoiceId;
         [ObservableProperty] private int invoiceConsecutive;
+        [ObservableProperty] private string? paymentConsecutive;
         [ObservableProperty] private CurrencyResponse? selectedCurrency;
         [ObservableProperty] private PaymentMethodResponse? selectedPaymentMethod;
         [ObservableProperty] private string? paymentMethodDetail;
@@ -48,13 +49,13 @@ namespace PLECSYS_Studio.ViewModels.PaymentRecords
                 InvoiceId = Convert.ToInt32(invoiceId);
 
             if (query.TryGetValue("invoiceConsecutive", out var consecutive))
+            {
                 InvoiceConsecutive = Convert.ToInt32(consecutive);
+                PaymentConsecutive = InvoiceConsecutive.ToString();
+            }
 
             if (query.TryGetValue("pendingBalance", out var balance))
                 PendingBalance = Convert.ToDecimal(balance);
-
-            Console.WriteLine($"InvoiceId recibido: {InvoiceId}");
-            Console.WriteLine($"InvoiceConsecutive recibido: {InvoiceConsecutive}");
         }
 
         public async Task InitializeAsync()

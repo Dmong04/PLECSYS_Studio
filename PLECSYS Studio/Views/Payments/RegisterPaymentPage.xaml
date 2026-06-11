@@ -23,7 +23,7 @@
         </VerticalStackLayout>
 
         <ScrollView Grid.Row="2" Padding="0,0,0,20">
-            
+
             <VerticalStackLayout Padding="24,20" Spacing="12" HorizontalOptions="Center" WidthRequest="330">
 
                 <Label Text="{Binding InvoiceConsecutive, StringFormat='Factura asociada: #{0}'}"
@@ -42,18 +42,19 @@
                         HeightRequest="48"
                         StrokeShape="RoundRectangle 8"
                         Padding="4,0">
-                    <Entry Placeholder="Ej:00015"
+                    <Entry Placeholder="{Binding InvoiceConsecutive}"
                            Text="{Binding PaymentConsecutive}"
                            FontSize="14"
                            Keyboard="Numeric"
+                           IsReadOnly="True"
                            BackgroundColor="Transparent"
-                           TextColor="{StaticResource PrimaryDarkBlue}" />
+                           TextColor="{StaticResource MediumGray}" />
                 </Border>
 
                 <Label Text="Moneda"
                        FontAttributes="Bold"
                        TextColor="{StaticResource PrimaryDarkBlue}" />
-                
+
                 <Border Stroke="{StaticResource PrimaryDarkBlue}"
                     StrokeThickness="1"
                         BackgroundColor="Transparent"
@@ -150,7 +151,7 @@
                         HeightRequest="48"
                         StrokeShape="RoundRectangle 8"
                         Padding="4,0">
-                    
+
                     <HorizontalStackLayout Spacing="8">
                         <Image Source="calendar.png"
                                WidthRequest="20"

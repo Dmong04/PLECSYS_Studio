@@ -24,27 +24,4 @@ public partial class InvoicePopUp : Popup
         }
 #endif
     }
-
-    public async void OnPaymentTapped(object sender, EventArgs e)
-    {
-        await CloseAsync();
-        await Shell.Current.GoToAsync($"PaymentHistoryPage?invoiceId={_vm.Invoice_id}");
-    }
-
-    public async void OnClaimTapped(object sender, EventArgs e)
-    {
-        await CloseAsync();
-        await Shell.Current.GoToAsync($"ClaimHistoryPage?invoiceId={_vm.Invoice_id}");
-    }
-
-    public async void OnHistoryTapped(object sender, EventArgs e)
-    {
-        await CloseAsync();
-        await Shell.Current.GoToAsync($"InvoiceHistoryPage?invoiceConsecutive={_vm.Consecutive}");
-    }
-
-    public async void OnCloseTapped(object sender, EventArgs e)
-    {
-        await CloseAsync();
-    }
 }
