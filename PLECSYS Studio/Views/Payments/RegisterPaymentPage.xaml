@@ -111,7 +111,7 @@
             Padding="6,2"
             HeightRequest="80">
                             <Editor Placeholder="Especifique el método de pago"
-                Text="{Binding OtherMethodDetail}"
+                Text="{Binding PaymentMethodDetail}"
                 AutoSize="Disabled"
                 BackgroundColor="Transparent"
                 TextColor="{StaticResource PrimaryDarkBlue}"
@@ -135,7 +135,7 @@
                         Padding="4,0">
                     <Entry Placeholder="0.00"
                            Keyboard="Numeric"
-                           Text="{Binding Amount}"
+                           Text="{Binding PaymentAmount}"
                            BackgroundColor="Transparent"
                            TextColor="{StaticResource PrimaryDarkBlue}"
                            FontSize="14"/>
@@ -198,7 +198,7 @@
                         VerticalOptions="Center">
 
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SaveCommand}" />
+                        <TapGestureRecognizer Command="{Binding RegisterPaymentCommand}" />
                     </Border.GestureRecognizers>
 
                     <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">

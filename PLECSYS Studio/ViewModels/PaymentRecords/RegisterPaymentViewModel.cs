@@ -7,6 +7,7 @@ using PLECSYS_Studio.Wrappers.Currencies;
 using PLECSYS_Studio.Wrappers.PaymentMethods;
 using PLECSYS_Studio.Wrappers.PaymentRecords;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace PLECSYS_Studio.ViewModels.PaymentRecords
 {
@@ -117,16 +118,19 @@ namespace PLECSYS_Studio.ViewModels.PaymentRecords
                 IsBusy = true;
                 var request = new PaymentRecordRequest()
                 {
-                    SourceId = InvoiceId,
-                    CurrencyId = SelectedCurrency?.CurrencyId ?? 0,
-                    PaymentMethodId = SelectedPaymentMethod?.PaymentMethodId ?? 0,
-                    DetailPaymentmethod = PaymentMethodDetail,
-                    PaidAmount = PaymentAmount ?? 0,
-                    PaymentDate = PaymentDate ?? DateTime.Now,
-                    PaymentDetail = PaymentDetail,
-                    ThirdpartytransactionId = ThirdPartyTransactionId ?? string.Empty
+                    Source_id = InvoiceId,
+                    Currency_id = SelectedCurrency?.CurrencyId ?? 0,
+                    Payment_method_id = SelectedPaymentMethod?.PaymentMethodId ?? 0,
+                    Detail_payment_method = PaymentMethodDetail,
+                    Paid_amount = PaymentAmount ?? 0,
+                    Payment_date = PaymentDate ?? DateTime.Now,
+                    Payment_detail = PaymentDetail,
+                    Third_party_transaction_id = ThirdPartyTransactionId ?? string.Empty
                 };
                 var response = await _paymentRecordService.RegisterPaymentAsync(request);
+
+                var json = JsonSerializer.Serialize(request);
+                Console.WriteLine($"Request body: {json}");
 
                 if (!response.Success)
                 {
