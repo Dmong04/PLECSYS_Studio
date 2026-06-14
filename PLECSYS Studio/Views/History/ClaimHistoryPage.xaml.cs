@@ -4,6 +4,7 @@ using PLECSYS_Studio.Views.Claims;
 namespace PLECSYS_Studio.Views.History;
 
 [QueryProperty(nameof(InvoiceId), "invoiceId")]
+[QueryProperty(nameof(InvoiceConsecutive), "invoiceConsecutive")]  
 public partial class ClaimHistoryPage : ContentPage
 {
     private readonly ClaimHistoryViewModel _viewModel;
@@ -19,6 +20,13 @@ public partial class ClaimHistoryPage : ContentPage
         }
     }
 
+    private int _invoiceConsecutive;
+    public int InvoiceConsecutive
+    {
+        get => _invoiceConsecutive;
+        set { _invoiceConsecutive = value; }
+    }
+
     public ClaimHistoryPage(ClaimHistoryViewModel vm)
     {
         InitializeComponent();
@@ -28,9 +36,7 @@ public partial class ClaimHistoryPage : ContentPage
     private async void LoadData()
     {
         if (_invoiceId > 0)
-        {
             await _viewModel.LoadClaims(_invoiceId);
-        }
     }
 
     private async void OnRegisterClaimClicked(object sender, EventArgs e)
@@ -41,6 +47,7 @@ public partial class ClaimHistoryPage : ContentPage
             return;
         }
 
-        await Shell.Current.GoToAsync($"{nameof(RegisterClaimPage)}?invoiceId={_invoiceId}");
+        await Shell.Current.GoToAsync(
+            $"{nameof(RegisterClaimPage)}?invoiceId={_invoiceId}&invoiceConsecutive={_invoiceConsecutive}"); // 👈
     }
 }

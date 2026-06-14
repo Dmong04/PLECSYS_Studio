@@ -48,65 +48,23 @@
                             BackgroundColor="Transparent" TextColor="{StaticResource PrimaryDarkBlue}" FontSize="14"/>
                 </Border>
 
-                <Label Text="Adjuntos (PDF/JPG/PNG, máx 5MB, hasta 5 archivos)" FontSize="12"
-                       TextColor="{StaticResource MediumGray}" />
-
                 <Border StrokeThickness="0"
-                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
-                        StrokeShape="RoundRectangle 8"
-                        HeightRequest="40"
-                        WidthRequest="70"
-                        Padding="10"
-                        HorizontalOptions="Start"
-                        VerticalOptions="Center">
-
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding PickFilesCommand}" />
-                    </Border.GestureRecognizers>
+                    BackgroundColor="{StaticResource PrimaryDarkBlue}"
+                    StrokeShape="RoundRectangle 25"
+                    HeightRequest="45"
+                    WidthRequest="100"
+                    Padding="10"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
 
                     <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
-                        <Image Source="addfile.png"
-                               WidthRequest="20"
-                               HeightRequest="20"
-                               Aspect="AspectFit"/>
-                    </HorizontalStackLayout>
-                </Border>
-
-                <CollectionView ItemsSource="{Binding Attachments}" HeightRequest="100">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Stroke="{StaticResource LightGray}" Padding="10" Margin="4" StrokeShape="RoundRectangle 12">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <Label Text="{Binding FileName}" TextColor="{StaticResource PrimaryDarkBlue}" />
-                                    <Button Grid.Column="1" Text="Borrar"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RegisterClaimViewModel}}, Path=RemoveAttachmentCommand}"
-                                            CommandParameter="{Binding .}"
-                                            BackgroundColor="{StaticResource AccentOrange}"
-                                            TextColor="White" CornerRadius="10" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <Border StrokeThickness="0"
-                        BackgroundColor="{StaticResource PrimaryDarkBlue}"
-                        StrokeShape="RoundRectangle 25"
-                        HeightRequest="45"
-                        WidthRequest="100"
-                        Padding="10"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center">
-
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding SaveCommand}" />
-                    </Border.GestureRecognizers>
-
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SaveCommand}" />
+                        </HorizontalStackLayout.GestureRecognizers>
                         <Label Text="Guardar"
-                               VerticalOptions="Center"
-                               TextColor="White"
-                               FontAttributes="Bold"/>
+                           VerticalOptions="Center"
+                           TextColor="White"
+                           FontAttributes="Bold"/>
                     </HorizontalStackLayout>
                 </Border>
 

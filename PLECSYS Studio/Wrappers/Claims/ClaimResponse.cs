@@ -4,14 +4,11 @@ namespace PLECSYS_Studio.Wrappers.Claims
 {
     public class ClaimResponse
     {
-        [JsonPropertyName("success")]
-        public bool Success { get; set; }
-        [JsonPropertyName("message")]
-        public  string? Message { get; set; } = string.Empty;
-        [JsonPropertyName("new_status")]
-        public string? NewStatus { get; set; }
-        [JsonPropertyName("claim_id")]
-        public int? ClaimId { get; set; }
-       
+        public int? Claim_id { get; set; }
+        public DateTime? Record_date { get; set; }
+        public string? User { get; set; }
+        public string? Description { get; set; }
+        public int? Invoice { get; set; }
+        public decimal? Claim_amount { get; set; }
     }
 }
