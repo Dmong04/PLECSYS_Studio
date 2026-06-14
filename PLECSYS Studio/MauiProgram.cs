@@ -15,6 +15,7 @@ using PLECSYS_Studio.Data.Users;
 using PLECSYS_Studio.Handlers;
 using PLECSYS_Studio.Handlers.GPS;
 using PLECSYS_Studio.Services;
+using PLECSYS_Studio.Services.Claims;
 using PLECSYS_Studio.Services.Currencies;
 using PLECSYS_Studio.Services.GPS;
 using PLECSYS_Studio.Services.History;
@@ -118,6 +119,7 @@ namespace PLECSYS_Studio
             builder.Services.AddScoped<ICurrencyService, CurrencyService>();
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
             builder.Services.AddScoped<IPaymentRecordService, PaymentRecordService>();
+            builder.Services.AddScoped<IClaimService, ClaimService>();
             // Servicios
 
             // ViewModels
@@ -139,9 +141,9 @@ namespace PLECSYS_Studio
             builder.Services.AddTransient<SmartFlowPage>();
             builder.Services.AddTransient<SmartFlowViewModel>();
             builder.Services.AddTransient<RegisterPaymentViewModel>();
+            builder.Services.AddTransient<RegisterClaimViewModel>();
             builder.Services.AddScoped<InvoiceHistoryViewModel>();
             builder.Services.AddScoped<PaymentHistoryViewModel>();
-            builder.Services.AddScoped<RegisterClaimViewModel>();
             builder.Services.AddScoped<ClaimHistoryViewModel>();
             builder.Services.AddScoped<InvoiceHistoryPage>();
             builder.Services.AddScoped<ClaimHistoryPage>();
