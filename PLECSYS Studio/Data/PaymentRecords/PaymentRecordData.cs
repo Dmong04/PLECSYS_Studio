@@ -15,7 +15,6 @@ namespace PLECSYS_Studio.Data.PaymentRecords
         public async Task<APIResponse<PaymentRecordResponse>> RegisterPayment(PaymentRecordRequest request)
         {
             var token = session.GetAccessToken();
-
             using var httpRequest = new HttpRequestMessage(HttpMethod.Post, "payment/record/create");
             httpRequest.Content = new StringContent(
                 JsonSerializer.Serialize(request),
@@ -24,11 +23,19 @@ namespace PLECSYS_Studio.Data.PaymentRecords
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _http.SendAsync(httpRequest);
-            response.EnsureSuccessStatusCode();
+            var body = await response.Content.ReadAsStringAsync();
 
-            return await response.Content.ReadFromJsonAsync<APIResponse<PaymentRecordResponse>>(
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                ?? new APIResponse<PaymentRecordResponse> { Data = null, Success = false, Message = "Respuesta vacía" };
+            var result = JsonSerializer.Deserialize<APIResponse<PaymentRecordResponse>>(
+                body,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+
+            return result ?? new APIResponse<PaymentRecordResponse>
+            {
+                Data = null,
+                Success = false,
+                Message = "No se pudo procesar la solicitud."
+            };
         }
     }
 }

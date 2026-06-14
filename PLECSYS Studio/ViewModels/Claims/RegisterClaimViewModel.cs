@@ -92,7 +92,7 @@ namespace PLECSYS_Studio.ViewModels.Claims
                 }
                 else
                 {
-                    await Shell.Current.DisplayAlert("Error", result.Message ?? "No se pudo registrar el reclamo.", "OK");
+                    await Shell.Current.DisplayAlert("Error", $"Código {result.Message}: Ya existe un reclamo activo en la factura", "OK");
                 }
             }
             catch (Exception ex)

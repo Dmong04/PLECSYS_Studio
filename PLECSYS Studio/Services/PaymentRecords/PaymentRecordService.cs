@@ -29,7 +29,7 @@ namespace PLECSYS_Studio.Services.Payments
                     {
                         Data = null,
                         Success = false,
-                        Message = "No se ha registrado el pago"
+                        Message = newPayment.Message ?? "No se ha registrado el pago"
                     };
                 }
 
