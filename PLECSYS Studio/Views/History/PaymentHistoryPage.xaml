@@ -75,8 +75,9 @@
 
                             <VerticalStackLayout Spacing="4">
 
-                                <Label Text="{Binding Consecutive, StringFormat='Numero de factura: {0}'}"
-                                       FontSize="13"
+                                <Label Text="{Binding Description}"
+                                       FontAttributes="Bold"
+                                       FontSize="14"
                                        TextColor="{StaticResource PrimaryDarkBlue}" />
 
                                 <Label Text="{Binding Record_date, StringFormat='Fecha: {0:dd/MM/yyyy}'}"

@@ -107,7 +107,7 @@
 
                     </Border>
 
-                    <!-- Filtro por cliente -->
+                    <!-- Filtro por cliente (empresa facturada) -->
                     <Border Stroke="{StaticResource MediumGray}"
                             StrokeThickness="1"
                             BackgroundColor="Transparent"
@@ -122,14 +122,7 @@
                             SelectedItem="{Binding ClientFilter.SelectedClient, Mode=TwoWay}"
                             ItemDisplayBinding="{Binding DisplayName}"
                             HorizontalOptions="Center"
-                            WidthRequest="150">
-                            <Picker.Behaviors>
-                                <toolkit:EventToCommandBehavior
-                                    EventName="SelectedIndexChanged"
-                                    Command="{Binding ClientFilter.FilterByClientCommand}"
-                                    CommandParameter="{Binding BindingContext.Invoices, Source={x:Reference Root}}" />
-                            </Picker.Behaviors>
-                        </Picker>
+                            WidthRequest="150" />
 
                     </Border>
 
@@ -158,11 +151,11 @@
                                TextColor="{StaticResource PrimaryDarkBlue}" />
                                     <Label Text="{Binding Total_voucher, StringFormat='Total: ₡{0:N0}'}"
                                FontSize="14" TextColor="{StaticResource PrimaryDarkBlue}" />
-                                    <Label Text="{Binding User_creator_id}"
+                                    <Label Text="{Binding User_creator_id, StringFormat='Creado por: {0}'}"
                                FontSize="13" TextColor="{StaticResource MediumGray}" />
-                                    <Label Text="{Binding Sell_company}"
+                                    <Label Text="{Binding Sell_company, StringFormat='Empresa facturadora: {0}'}"
                                FontSize="13" TextColor="{StaticResource MediumGray}" />
-                                    <Label Text="{Binding Charged_company}"
+                                    <Label Text="{Binding Charged_company, StringFormat='Facturado a: {0}'}"
                                FontSize="13" TextColor="{StaticResource MediumGray}" />
                                 </VerticalStackLayout>
                             </Border>
