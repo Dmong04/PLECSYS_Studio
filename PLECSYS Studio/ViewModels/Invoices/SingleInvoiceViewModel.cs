@@ -25,6 +25,7 @@ namespace PLECSYS_Studio.ViewModels
         public string User_creator_id { get; set; } = string.Empty;
         public string Sell_company { get; set; } = string.Empty;
         public string Charged_company { get; set; } = string.Empty;
+        public int? Charged_company_id { get; set; }
 
         public void SetPopup(Popup popup) => currentPopup = popup;
 

@@ -8,6 +8,7 @@ using PLECSYS_Studio.ViewModels.Messages;
 using PLECSYS_Studio.Services.InvoiceService;
 using PLECSYS_Studio.Data.Invoices;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using PLECSYS_Studio.Services;
 
 namespace PLECSYS_Studio.ViewModels.Invoices
@@ -31,6 +32,9 @@ namespace PLECSYS_Studio.ViewModels.Invoices
 
         public ObservableCollection<SingleInvoiceViewModel> Invoices { get; } = [];
 
+        // Lista maestra sin filtrar, fuente para el filtrado en memoria
+        private List<SingleInvoiceViewModel> _allInvoices = [];
+
         public InvoicesViewModel(
             IInvoiceService service,
             IInvoicePdfService pdfService,
@@ -49,6 +53,8 @@ namespace PLECSYS_Studio.ViewModels.Invoices
             CurrencyFilter = currencyFilter;
             DateFilter = dateFilter;
 
+            ClientFilter.PropertyChanged += OnClientFilterPropertyChanged;
+
             WeakReferenceMessenger.Default.Register<PaymentRegisteredMessage>(this, (_, msg) =>
             {
                 var invoice = Invoices.FirstOrDefault(i => i.Consecutive == msg.InvoiceConsecutive);
@@ -64,6 +70,12 @@ namespace PLECSYS_Studio.ViewModels.Invoices
             });
         }
 
+        private void OnClientFilterPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ClientFilterViewModel.SelectedClient))
+                ApplyClientFilter();
+        }
+
         [RelayCommand]
         public async Task LoadInvoices()
         {
@@ -75,6 +87,7 @@ namespace PLECSYS_Studio.ViewModels.Invoices
             {
                 var response = await _service.LoadInvoices(_session.GetEmail(), _session.GetCompanyId());
                 Invoices.Clear();
+                _allInvoices.Clear();
 
                 if (response.Data is not null)
                 {
@@ -88,20 +101,22 @@ namespace PLECSYS_Studio.ViewModels.Invoices
                             User_creator_id = invoice.User?.Email ?? string.Empty,
                             Sell_company = invoice.Sell_company?.Company_name ?? string.Empty,
                             Charged_company = invoice.Charged_company?.Company_name ?? string.Empty,
+                            Charged_company_id = invoice.Charged_company?.Company_id,
                         };
 
+                        _allInvoices.Add(vm);
                         Invoices.Add(vm);
                     }
 
-                    // Poblar filtros
-                    var clients = response.Data
-                        .Where(i => !string.IsNullOrWhiteSpace(i.User?.Email))
+                    // Poblar filtro de empresas facturadas (Charged_company)
+                    var companies = response.Data
+                        .Where(i => i.Charged_company is not null)
                         .Select(i => new ClientOption
                         {
-                            Email = i.User?.Email,
-                            DisplayName = $"{i.User?.Name} {i.User?.First_lastname} {i.User?.Second_lastname}",
+                            CompanyId = i.Charged_company!.Company_id,
+                            DisplayName = i.Charged_company!.Company_name ?? string.Empty,
                         })
-                        .DistinctBy(i => i.DisplayName)
+                        .DistinctBy(i => i.CompanyId)
                         .OrderBy(i => i.DisplayName)
                         .ToList();
 
@@ -116,7 +131,7 @@ namespace PLECSYS_Studio.ViewModels.Invoices
                         .OrderBy(i => i.Currency_code)
                         .ToList();
 
-                    ClientFilter.LoadClients(clients);
+                    ClientFilter.LoadClients(companies);
                     CurrencyFilter.LoadCurrencies(currencies);
 
                     StatusMessage = "Se han cargado correctamente las facturas";
@@ -134,6 +149,20 @@ namespace PLECSYS_Studio.ViewModels.Invoices
             {
                 IsBusy = false;
             }
+        }
+
+        private void ApplyClientFilter()
+        {
+            var selected = ClientFilter.SelectedClient;
+
+            Invoices.Clear();
+
+            var filtered = selected is null || selected.CompanyId is null
+                ? _allInvoices
+                : _allInvoices.Where(i => i.Charged_company_id == selected.CompanyId);
+
+            foreach (var invoice in filtered)
+                Invoices.Add(invoice);
         }
     }
 }

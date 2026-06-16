@@ -76,9 +76,9 @@
                                        FontAttributes="Bold" FontSize="15"
                                        TextColor="{StaticResource PrimaryDarkBlue}" />
 
-                                <Label Text="{Binding Consecutive, StringFormat='Numero de factura: {0}'}"
+                                <Label Text="{Binding Description}"
                                        FontSize="13"
-                                       TextColor="{StaticResource PrimaryDarkBlue}" />
+                                       TextColor="{StaticResource MediumGray}" />
 
                                 <Label Text="{Binding Pending_balance, StringFormat='Saldo pendiente: ₡{0:F2}'}"
                                        FontSize="13"
