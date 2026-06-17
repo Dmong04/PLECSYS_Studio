@@ -24,7 +24,7 @@ namespace PLECSYS_Studio.Services.Claims
                     {
                         Data = null,
                         Success = false,
-                        Message = "No se ha registrado el reclamo"
+                        Message = newClaim.Message ?? "No se ha registrado el reclamo"
                     };
                 }
 

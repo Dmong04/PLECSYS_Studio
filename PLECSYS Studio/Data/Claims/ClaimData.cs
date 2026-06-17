@@ -28,13 +28,35 @@ namespace PLECSYS_Studio.Data.Claims
             httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _http.SendAsync(httpRequest);
-            var raw = await response.Content.ReadAsStringAsync();
+            var statusCode = (int)response.StatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<APIResponse<ClaimResponse>>(
+                body,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+            if (result != null)
+            {
+                // si el backend no manda mensaje, ponemos un fallback formal
+                if (string.IsNullOrWhiteSpace(result.Message))
+                {
+                    result.Message = $"Error: No se pudo registrar el reclamo.";
+                }
+                return result;
+            }
+
+            // fallback si no se pudo deserializar nada
+            return result ?? new APIResponse<ClaimResponse>
+            {
+                Data = null,
+                Success = false,
+                Message = $"Error: No se pudo registrar el reclamo.",
+            };
 
             // El backend devuelve 400 cuando ya hay un reclamo activo,
             // pero igual trae body con success/message útil
-            return JsonSerializer.Deserialize<APIResponse<ClaimResponse>>(
-                raw, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                ?? new APIResponse<ClaimResponse> { Data = null, Success = false, Message = "Respuesta vacía" };
+            //return JsonSerializer.Deserialize<APIResponse<ClaimResponse>>(
+            //    raw, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            //    ?? new APIResponse<ClaimResponse> { Data = null, Success = false, Message = "Respuesta vacía" };
         }
     }
 }
